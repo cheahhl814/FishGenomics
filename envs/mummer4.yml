@@ -1,0 +1,14 @@
+name: mummer4
+channels:
+  - bioconda
+  - pkgs/main
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=5.1=1_gnu
+  - libgcc-ng=11.2.0=h1234567_1
+  - libgomp=11.2.0=h1234567_1
+  - libnsl=2.0.0=h5eee18b_0
+  - libstdcxx-ng=11.2.0=h1234567_1
+  - mummer4=4.0.0rc1=pl5321h87f3376_3
+  - perl=5.32.1=0_h5eee18b_perl5
+
