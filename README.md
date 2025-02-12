@@ -1,6 +1,6 @@
 # Nextflow Genomic Pipeline
 
-A Nextflow pipeline for genome assembly (using Oxford Nanopore Technologies (ONT) long reads, implementing multiple assemblers and reconciliation approaches), genome annotation, and comparative genomic analyses.
+A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologies (ONT) long reads, implementing multiple assemblers and reconciliation approaches).
 
 ## Features
 - Pre-assembly QC and read processing
