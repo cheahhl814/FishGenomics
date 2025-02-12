@@ -178,56 +178,6 @@ workflow reconciliationQuickmerge {
   multiqc(assemblyReports)
 }
 
-workflow annotation_genomeOnly {
-  // Input channel for the final genome assembly
-  input_assembly = Channel.fromPath(params.finalAssembly)
-  annotation_stats = Channel.fromPath(params.annotation_stats, type: 'dir')
-  species = Channel.value(params.species)
-  buscodb = Channel.value(params.buscodb)
-
-  // Annotation workflow
-  cleanGenome(input_assembly)
-  sortGenome(cleanGenome.out.cleanGenome)
-  maskGenome(sortGenome.out.sortGenome)
-  predictGenes(maskGenome.out.maskGenome, species, buscodb)
-  annotateGenes(predictGenes.out, buscodb)
-  annotationStats(annotateGenes.out.finalGFF)
-  multiqc(annotation_stats)
-}
-
-workflow annotation_genomeRNA {
-  // Input channel for the final genome assembly
-  input_assembly = Channel.fromPath(params.finalAssembly)
-  annotation_stats = Channel.fromPath(params.annotation_stats, type: 'dir')
-  species = Channel.value(params.species)
-  buscodb = Channel.value(params.buscodb)
-
-  // Annotation workflow
-  cleanGenome(input_assembly)
-  sortGenome(cleanGenome.out.cleanGenome)
-  maskGenome(sortGenome.out.sortGenome)
-  trainPredict(maskGenome.out.maskGenome, species, buscodb)
-  updateGenes(trainPredict.out)
-  annotateGenes(trainPredict.out, buscodb)
-  annotationStats(annotateGenes.out.finalGFF)
-  multiqc(annotation_stats)
-}
-
-workflow repeatAnalysis {
-  // Input channel for repeat analysis
-
-  // Workflow for repeat analysis
-}
-
-workflow comparativeGenomics {
-  // Input channel for comparative genomics
-  genomeRefseq = Channel.fromPath(params.genome_refseq)
-  speciesBED = Channel.fromPath(params.species_bed)
-  speciesFASTA = Channel.fromPath(params.species_fasta)
-
-  // Comparative genomics workflow
-}
-
 // Workflow error handling
 workflow.onError {
     println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
