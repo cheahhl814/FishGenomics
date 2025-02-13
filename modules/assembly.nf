@@ -70,6 +70,7 @@ process raven {
   """
 }
 
+
 process shasta {
   tag "Assemble genome with Shasta"
   publishDir "./results/assembly/shasta", mode: 'copy', overwrite: false
