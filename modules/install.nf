@@ -4,7 +4,7 @@ process getPreassembly {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n preassembly
+    micromamba create -n preassembly -y
     micromamba activate preassembly
     micromamba install -y porechop filtlong minimap2 samtools pip seqkit
     pip install nanoplot
@@ -17,7 +17,7 @@ process getAssembly {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n assembly
+    micromamba create -n assembly -y
     micromamba activate assembly
     micromamba install -y canu flye raven shasta wtdbg racon busco quast mummer4
     """
@@ -29,7 +29,7 @@ process getReconciliation {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n reconciliation
+    micromamba create -n reconciliation -y
     micromamba activate reconciliation
     micromamba install quickmerge ragtag
     """
