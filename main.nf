@@ -23,14 +23,13 @@ include { buildIndex; mapReads; filterReads; nanoplot as nanoplot_raw; porechop;
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
 include { quast; quast as quast_scaffold; busco; busco as busco_scaffold; galignment } from './modules/assessment.nf'
-include { multiqc } from './modules/multiqc.nf'
+include { multiqc as preassemblyReport; multiqc as assemblyReport } from './modules/multiqc.nf'
 
 // Workflows
 
 workflow preAssembly {
   fastq = Channel.fromPath(params.fastq).map { file -> def baseName = file.baseName.replaceAll(/\.(fastq|fq)$/, ''); [baseName, file] }.groupTuple()
   conRef = Channel.fromPath(params.conRef)
-  preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
 
   nanoplot_raw(fastq)
   porechop(fastq)
@@ -39,7 +38,6 @@ workflow preAssembly {
   buildIndex(conRef)
   mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
   filterReads(mapReads.out.contaminantsID, filtlong.out.filtlong_fastq)
-  multiqc(preassemblyReports)
 }
 
 workflow canuWf {
@@ -125,7 +123,6 @@ workflow reconciliationRagTag {
   scaffold5 = Channel.fromPath(params.fifthA)
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
-  assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
 
   // Genome reconciliation workflow
   patch1(canuScaffold, wtdbg2Scaffold)
@@ -137,7 +134,6 @@ workflow reconciliationRagTag {
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   galignment(racon.out.scaffold_fasta, reference_genome)
-  multiqc(assemblyReports)
 }
 
 workflow reconciliationQuickmerge {
@@ -149,7 +145,6 @@ workflow reconciliationQuickmerge {
   shastaScaffold = Channel.fromPath(params.shastaScaffold)
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
-  assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
 
   // Genome reconciliation workflow
   quickmerge1(canuScaffold, wtdbg2Scaffold)
@@ -161,7 +156,14 @@ workflow reconciliationQuickmerge {
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   galignment(racon.out.scaffold_fasta, reference_genome)
-  multiqc(assemblyReports)
+}
+
+workflow generateReport {
+  preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
+  assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
+
+  preassemblyReport(preassemblyReports)
+  assemblyReport(assemblyReports)
 }
 
 // Workflow error handling
