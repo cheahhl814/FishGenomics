@@ -29,7 +29,7 @@ include { multiqc } from './modules/multiqc.nf'
 
 workflow preAssembly {
   fastq = Channel.fromPath(params.fastq).map { file -> def baseName = file.baseName.replaceAll(/\.(fastq|fq)$/, '') [baseName, file]}.groupTuple()
-  conRef = Channel.fromPath(params.conRef).set
+  conRef = Channel.fromPath(params.conRef)
   preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
 
   nanoplot_raw(fastq)
