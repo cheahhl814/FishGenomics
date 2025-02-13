@@ -31,7 +31,7 @@ process porechop {
   script:
   def fastq = fastq.collect { "$it" }.join(' ')
   """
-  porechop --threads $task.cpus -i $fastq -o output_${baseName}_porechop.fastq --format fastq 2>&1 | tee ${baseName}_porechop.log
+  porechop --threads $task.cpus -i $fastq -o ${baseName}_porechop.fastq --format fastq 2>&1 | tee ${baseName}_porechop.log
   """
 }
 
