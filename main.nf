@@ -166,7 +166,7 @@ workflow reconciliationQuickmerge {
 }
 
 workflow generateReport {
-  preassemblyReports = Channel.fromPbeforescript:ath("{params.resultDir}/pre-assembly", type: 'dir')
+  preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
   assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
 
   preassemblyReport(preassemblyReports)
