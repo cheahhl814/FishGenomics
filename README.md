@@ -12,8 +12,20 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 
 ## Requirements
 - Nextflow (DSL2)
-- Conda, Mamba, or Micromamba (Recommended) (for tool dependencies)
-- Input ONT reads (.fastq) in current directory
+    ```bash
+    curl -s https://get.nextflow.io | bash
+    chmod +x nextflow
+    mv nextflow $HOME/.local/bin/
+    ```
+- Micromamba (Recommended) (for tool dependencies)
+    ```bash
+    "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+    ```
+- Tool dependencies
+    ```bash
+    nextflow run cheahhl814/FishGenomics -entry install -profile local
+    ```
+Input ONT reads (.fastq) in current directory
 - Contaminant genomes (.fasta) in the `contaminants/` folder of current directory
 - Reference genome (.fasta, for scaffolding) in current directory
 
