@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
 params.fastq = "${launchDir}/*.{fq,fastq}" // Input WGS long read fastq files
-params.mmi = file("database/contaminantIndex.mmi") // Minimap2 indexed contaminant database
+params.conRef = "${launchDir}/contaminants/*.fasta" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
 
 // Parameters (Assembly)
@@ -26,7 +26,6 @@ params.nanopore_mrna = ''
 params.trinity = ''
 params.species = ""
 params.buscodb = eukaryota      //Other options: metazoa, fungi, embryophyta, protists, etc. 
-params.annotation_stats = './annotation/annotate/stats'
 
 // Parameters (Comparative Genomics)
 params.genome_refseq = ""
@@ -34,7 +33,7 @@ params.species_bed = ""
 params.species_fasta = ""
 
 // Module inclusion
-include { indexDatabase; removeContaminant; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
+include { buildIndex; removeContaminant; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
 include { quast; quast as quast_scaffold; busco; busco as busco_scaffold; galignment } from './modules/assessment.nf'
@@ -45,19 +44,21 @@ include { cleanGenome; sortGenome; maskGenome; trainPredict; updateGenes; predic
 
 workflow preAssembly {
   fastq = Channel.fromPath(params.fastq).map { file -> def baseName = file.baseName.replaceAll(/\.(fastq|fq)$/, '') [baseName, file]}.groupTuple()
-  minimapIndex = Channel.fromPath(params.mmi)
+  conRef = Channel.fromPath(params.conRef).set
   preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
 
   nanoplot_raw(fastq)
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
   nanoplot_trimmed(filtlong.out.filtlong_fastq)
-  removeContaminant(minimapIndex, filtlong.out.filtlong_fastq)
+  buildIndex(conRef)
+  mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
+  filterReads(mapReads.out.contaminantsID, filtlong.out.filtlong_fastq)
   multiqc(preassemblyReports)
 }
 
 workflow canu {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
 
@@ -72,7 +73,7 @@ workflow canu {
 }
 
 workflow wtdbg2 {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
 
@@ -87,7 +88,7 @@ workflow wtdbg2 {
 }
 
 workflow flye {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
@@ -103,7 +104,7 @@ workflow flye {
 }
 
 workflow raven {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
 
   raven(fastq)
@@ -117,7 +118,7 @@ workflow raven {
 }
 
 workflow shasta {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
 
   shasta(fastq)
@@ -137,7 +138,7 @@ workflow reconciliationRagTag {
   scaffold3 = Channel.fromPath(params.thirdA)
   scaffold4 = Channel.fromPath(params.fourthA)
   scaffold5 = Channel.fromPath(params.fifthA)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
 
@@ -161,7 +162,7 @@ workflow reconciliationQuickmerge {
   flyeScaffold = Channel.fromPath(params.flyeScaffold)
   ravenScaffold = Channel.fromPath(params.ravenScaffold)
   shastaScaffold = Channel.fromPath(params.shastaScaffold)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
 

@@ -53,21 +53,57 @@ process filtlong {
     """
 }
 
-process removeContaminant {
-  tag "Filter out contaminant reads (microbial and human DNA)"
-  publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
+process buildIndex {
+    tag "Mapping long reads"
+    publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
 
-  input:
-  path(minimapIndex)
-  tuple val(baseName), path(fastq)
+    input:
+    path(genome)
 
-  output:
-  path "*_decontaminated.fastq", emit: deconFASTQ
+    output:
+    path "*.mmi", emit: mmi
 
-  script:
-  """
-  minimap2 -t ${task.cpus} -ax map-ont contaminantIndex.mmi $fastq > ${baseName}_contaminant.sam
-  samtools view -b -f 4 ${baseName}_contaminant.sam > ${baseName}_decontaminated.bam
-  samtools ${baseName}_decontaminated.bam > ${baseName}_decontaminated.fastq
-  """
+    script:
+    def genome_id = genome.baseName
+    """
+    minimap2 -d ${genome_id}.mmi $genome
+    """
+}
+
+process mapReads {
+    tag "Map reads to contaminant genomes (microbial and human DNA)"
+    publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
+
+    input:
+    path(index)
+    tuple val(baseName), path(fastq)
+
+    output:
+    path "*_ids.txt", emit: contaminantsID
+
+    script:
+    def contaminant_id = index.baseName
+    """
+    minimap2 -t ${task.cpus} -ax map-ont $index $fastq > ${contaminant_id}.sam
+    samtools view ${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${contaminant_id}_ids.txt
+    """
+}
+
+process filterReads {
+    tag "Map reads to contaminant genomes (microbial and human DNA)"
+    publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
+
+    input:
+    tuple val(baseName), path(contaminantID)
+    tuple val(baseName), path(fastq)
+
+    output:
+    path "decontaminated.fastq", emit: fastq
+
+    script:
+    def ids = contaminantID.collect { "$it" }.join(' ')
+    """
+    cat $ids | sort | uniq > contaminantID_all.txt
+    seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > decontaminated.fastq
+    """
 }
