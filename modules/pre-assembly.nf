@@ -13,6 +13,7 @@ process nanoplot {
   script:
   def fastq = fastq.collect { "$it" }.join(' ')
   """
+  micromamba activate preassembly
   NanoPlot --threads ${task.cpus} --fastq $fastq --maxlength 40000 --tsv_stats --plots dot --format png --legacy hex --info_in_report --prefix $baseName
   """
 }
@@ -30,6 +31,7 @@ process porechop {
   script:
   def fastq = fastq.collect { "$it" }.join(' ')
   """
+  micromamba activate preassembly
   porechop --threads $task.cpus -i $fastq -o ${baseName}_porechop.fastq --format fastq
   """
 }
@@ -48,6 +50,7 @@ process filtlong {
     script:
     def fastq = fastq.collect { "$it" }.join(' ')
     """
+    micromamba activate preassembly
     filtlong --min_length 1000 --keep_percent 90 $fastq | gzip > ${baseName}_filtlong.fastq 2>&1 | tee ${baseName}_filtlong.log
     """
 }
@@ -65,6 +68,7 @@ process buildIndex {
     script:
     def genome_id = genome.baseName
     """
+    micromamba activate preassembly
     minimap2 -d ${genome_id}.mmi $genome
     """
 }
@@ -83,6 +87,7 @@ process mapReads {
     script:
     def contaminant_id = index.baseName
     """
+    micromamba activate preassembly
     minimap2 -t ${task.cpus} -ax map-ont $index $fastq > ${contaminant_id}.sam
     samtools view ${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${contaminant_id}_ids.txt
     """
@@ -102,6 +107,7 @@ process filterReads {
     script:
     def ids = contaminantID.collect { "$it" }.join(' ')
     """
+    micromamba activate preassembly
     cat $ids | sort | uniq > contaminantID_all.txt
     seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > decontaminated.fastq
     """
