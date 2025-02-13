@@ -3,7 +3,9 @@ process getPreassembly {
 
     script:
     """
-    micromamba create -y -n preassembly porechop filtlong minimap2 samtools pip seqkit
+    micromamba create -n preassembly
+    micromamba activate preassembly
+    micromamba install -y porechop filtlong minimap2 samtools pip seqkit
     pip install nanoplot
     """
 }
@@ -13,7 +15,9 @@ process getAssembly {
 
     script:
     """
-    micromamba create -y -n assembly canu flye raven shasta wtdbg racon busco quast mummer4
+    micromamba create -n assembly
+    micromamba activate assembly
+    micromamba install -y canu flye raven shasta wtdbg racon busco quast mummer4
     """
 }
 
@@ -22,6 +26,8 @@ process getReconciliation {
 
     script:
     """
-    micromamba create -y -n reconciliation quickmerge ragtag
+    micromamba create -n reconciliation
+    micromamba activate reconciliation
+    micromamba install quickmerge ragtag
     """
 }
