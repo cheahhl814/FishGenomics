@@ -26,12 +26,11 @@ process porechop {
 
   output:
   path "*_porechop.fastq", emit: porechop_fastq
-  path "*_porechop.log", emit: porechop_log
 
   script:
   def fastq = fastq.collect { "$it" }.join(' ')
   """
-  porechop --threads $task.cpus -i $fastq -o ${baseName}_porechop.fastq --format fastq 2>&1 | tee ${baseName}_porechop.log
+  porechop --threads $task.cpus -i $fastq -o ${baseName}_porechop.fastq --format fastq
   """
 }
 
