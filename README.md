@@ -35,7 +35,7 @@ nextflow run main.nf -entry preAssembly [parameters]
 
 ### Parameters (Assembly)
 ```bash
-nextflow run main.nf -entry [canu,wtdbg2,flye,raven,shasta] --genomeSize "estimated_size"
+nextflow run main.nf -entry [canuWf,wtdbg2Wf,flyeWf,ravenWf,shastaWf] --genomeSize "estimated_size"
 ```
 - `--genomeSize`: Estimated genome size (required for some assemblers)
 
@@ -54,7 +54,7 @@ nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
 
 ## Workflows
 1. Read QC and filtering: `preAssembly`
-2. Genome assembly: `canu`, `wtdbg2`, `flye`, `raven`, `shasta`
+2. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
 3. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
 
 ## 
