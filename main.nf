@@ -18,27 +18,12 @@ params.thirdA = ''
 params.fourthA = ''
 params.fifthA = ''
 
-// Parameters (Annotation)
-params.finalAssembly = ""
-params.pacbio_isoseq = ''
-params.nanopore_cdna = ''
-params.nanopore_mrna = ''
-params.trinity = ''
-params.species = ""
-params.buscodb = eukaryota      //Other options: metazoa, fungi, embryophyta, protists, etc. 
-
-// Parameters (Comparative Genomics)
-params.genome_refseq = ""
-params.species_bed = ""
-params.species_fasta = ""
-
 // Module inclusion
-include { buildIndex; removeContaminant; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
+include { buildIndex; mapReads; filterReads; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
 include { quast; quast as quast_scaffold; busco; busco as busco_scaffold; galignment } from './modules/assessment.nf'
 include { multiqc } from './modules/multiqc.nf'
-include { cleanGenome; sortGenome; maskGenome; trainPredict; updateGenes; predictGenes; annotateGenes; annotationStats } from './modules/annotation.nf'
 
 // Workflows
 

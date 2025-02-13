@@ -8,15 +8,14 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 - Assembly polishing with Racon
 - Assembly evaluation (QUAST, BUSCO)
 - Genome reconciliation using RagTag and Quickmerge
-- Genome annotation using Funannotate
-- Comparative genomic analyses using JCVI
 - MultiQC report generation
 
 ## Requirements
 - Nextflow (DSL2)
-- Conda/Mamba/Micromamba (Recommended) (for tool dependencies)
-- Input ONT reads (.fastq/.fq.gz)
-- Reference genome (fasta, for scaffolding)
+- Conda, Mamba, or Micromamba (Recommended) (for tool dependencies)
+- Input ONT reads (.fastq) in current directory
+- Contaminant genomes (.fasta) in the `contaminants/` folder of current directory
+- Reference genome (.fasta, for scaffolding) in current directory
 
 ## Usage
 
