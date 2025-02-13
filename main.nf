@@ -42,7 +42,7 @@ workflow preAssembly {
   multiqc(preassemblyReports)
 }
 
-workflow canu {
+workflow canuWf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
@@ -57,7 +57,7 @@ workflow canu {
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
-workflow wtdbg2 {
+workflow wtdbg2Wf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
@@ -72,7 +72,7 @@ workflow wtdbg2 {
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
-workflow flye {
+workflow flyeWf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
@@ -88,7 +88,7 @@ workflow flye {
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
-workflow raven {
+workflow ravenWf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
 
@@ -102,7 +102,7 @@ workflow raven {
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
-workflow shasta {
+workflow shastaWf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
   reference_genome = Channel.fromPath(params.reference_genome)
 
