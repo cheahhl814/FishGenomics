@@ -62,7 +62,7 @@ process raven {
 
   output:
   path "*.fasta.gz", emit: raven_contig
-  path ""*.gfa.gz"", emit: raven_gfa 
+  path "*.gfa.gz", emit: raven_gfa 
 
   script:
   """
