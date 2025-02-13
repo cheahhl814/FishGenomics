@@ -25,7 +25,7 @@ nextflow run main.nf -entry [workflow_name] [parameters]
 ```
 You can also run it directly without cloning/downloading the script using:
 ```bash
-nextflow run cheahhl814/NextGenomics -entry [workflow_name] [parameters]
+nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters]
 ```
 
 ### Parameters (Pre-assembly)
