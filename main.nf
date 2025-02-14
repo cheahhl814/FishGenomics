@@ -163,7 +163,7 @@ workflow reconciliationQuickmerge {
   flyeScaffold = Channel.fromPath(params.flyeScaffold)
   ravenScaffold = Channel.fromPath(params.ravenScaffold)
   shastaScaffold = Channel.fromPath(params.shastaScaffold)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
 
   // Genome reconciliation workflow
