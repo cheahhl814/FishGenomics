@@ -115,7 +115,6 @@ process filterReads {
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    cat ${ids} | sort | uniq > contaminantID_all.txt
-    seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > ${sample_id}_decontaminated.fastq
+    cat ${ids} | sort | uniq | seqkit grep -j ${task.cpus} -v -f - ${fastq} > ${sample_id}_decontaminated.fastq
     """
 }
