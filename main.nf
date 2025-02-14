@@ -46,10 +46,10 @@ workflow preAssembly {
   fastq = Channel.fromPath(params.fastq).map { file -> def baseName = file.baseName.replaceAll(/\.(fastq|fq)$/, ''); [baseName, file] }.groupTuple()
   conRef = Channel.fromPath(params.conRef)
 
-  nanoplot_raw(fastq)
+  nanoplot_raw(fastq.collectFile(name: 'fastq.txt'))
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
-  nanoplot_trimmed(filtlong.out.filtlong_fastq)
+  nanoplot_trimmed(filtlong.out.filtlong_fastq.collectFile(name: 'fastq.txt'))
   buildIndex(conRef)
   mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
   filterReads(mapReads.out.contaminantsID, filtlong.out.filtlong_fastq)
