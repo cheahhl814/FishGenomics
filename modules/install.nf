@@ -11,37 +11,96 @@ process getPreassembly {
     """
 }
 
-process getAssembly {
-    tag "Install dependencies required for the assembly workflows"
+process getCanu {
+    tag "Install Canu"
 
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n canu -y
-    micromamba activate canu
-    micromamba install -y -c bioconda canu
-    micromamba create -n flye -y
-    micromamba activate flye
-    micromamba install -y -c bioconda flye
-    micromamba create -n raven -y
-    micromamba activate raven
-    micromamba install -y -c bioconda raven
-    micromamba create -n shasta -y
-    micromamba activate shasta
-    micromamba install -y -c bioconda shasta
-    micromamba create -n wtdbg -y
-    micromamba activate wtdbg
-    micromamba install -y -c bioconda wtdbg
-    micromamba create -n racon -y
-    micromamba activate racon
-    micromamba install -y -c bioconda racon
-    micromamba create -n mummer4 -y
-    micromamba activate mummer4
-    micromamba install -y -c bioconda mummer4
-    micromamba create -n assessment -y
-    micromamba activate assessment
-    micromamba install -y -c bioconda -c conda-forge busco quast 
+    micromamba create -n canu -y -c bioconda canu
     """
+}
+
+process getFlye {
+    tag "Install Flye"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n flye -y -c bioconda flye
+    """
+}
+
+process getRaven {
+    tag "Install Raven"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n raven -y -c bioconda raven
+    """
+}
+
+process getShasta {
+    tag "Install Shasta"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n shasta -y -c bioconda shasta
+    """
+}
+
+process getwtdbg2 {
+    tag "Install wtdbg2"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n wtdbg -y -c bioconda wtdbg
+    """
+}
+
+process getRacon {
+    tag "Install Racon"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n racon -y -c bioconda racon
+    """
+}
+
+process getMummer {
+    tag "Install mummer4"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n mummer4 -y -c bioconda mummer4
+    """
+}
+
+process getQuast {
+    tag "Install Quast"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n quast -y -c bioconda quast
+    """
+}
+
+process getBusco {
+    tag "Install BUSCO"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n busco -y -c bioconda -c conda-forge busco
+    """
+}
+
 }
 
 process getReconciliation {
@@ -50,8 +109,6 @@ process getReconciliation {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n reconciliation -y
-    micromamba activate reconciliation
-    micromamba install -c bioconda quickmerge ragtag
+    micromamba create -n reconciliation -y -c bioconda quickmerge ragtag
     """
 }
