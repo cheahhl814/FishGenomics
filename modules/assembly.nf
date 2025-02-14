@@ -3,18 +3,18 @@ process canu {
   publishDir "./results/assembly/canu", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(fastq)
+  val(fastq)
   val(genomeSize)
+  val(name)
 
   output:
   path "*.contigs.fasta", emit: canu_contig
 
   script:
-  def sample_id = fastq.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate canu
-  canu -p $sample_id genomeSize=$genomeSize -nanopore $fastq
+  canu -p ${name} genomeSize=${genomeSize} -nanopore ${fastq}
   """
 }
 
@@ -23,19 +23,19 @@ process wtdbg2 {
   publishDir "./results/assembly/wtdbg2", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(fastq)
+  val(fastq)
   val(genomeSize)
+  val(name)
 
   output:
   path "*.ctg.fa", emit: wtdbg2_contig
 
   script:
-  def sample_id = fastq.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate wtdbg
-  wtdbg2 -t ${task.cpus} -x ont -g $genomeSize -fo $baseName -x ont -i $fastq
-  wtpoa-cns -t ${task.cpus} -i ${baseName}.ctg.lay.gz -fo ${baseName}.ctg.fa
+  wtdbg2 -t ${task.cpus} -x ont -g ${genomeSize} -fo ${name}_wtdbg -x ont -i ${fastq}
+  wtpoa-cns -t ${task.cpus} -i ${name}_wtdbg.ctg.lay.gz -fo ${name}_wtdbg.ctg.fa
   """
 }
 
@@ -44,7 +44,7 @@ process flye {
   publishDir "./results/assembly/flye", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(fastq)
+  val(fastq)
   val(genomeSize)
   path(flyeDir)
 
@@ -55,7 +55,7 @@ process flye {
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate flye
-  flye -t ${task.cpus} --genome-size $genomeSize --out-dir $flyeDir --nano-raw $fastq
+  flye -t ${task.cpus} --genome-size ${genomeSize} --out-dir $flyeDir --nano-raw ${fastq}
   """
 }
 
@@ -64,17 +64,17 @@ process raven {
   publishDir "./results/assembly/raven", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(fastq)
+  val(fastq)
 
   output:
   path "*.fasta.gz", emit: raven_contig
-  path "*.gfa.gz", emit: raven_gfa 
+  path "*.gfa.gz", emit: raven_gfa
 
   script:
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate raven
-  raven -t ${task.cpus} $fastq
+  raven -t ${task.cpus} ${fastq}
   """
 }
 
@@ -84,18 +84,18 @@ process shasta {
   publishDir "./results/assembly/shasta", mode: 'copy', overwrite: false
 
   input:
-  path(fastq)
+  val(fastq)
+  val(name)
 
   output:
   path "Assembly.fasta", emit: shasta_contig
 
   script:
-  def sample_id = fastq.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate shasta
-  FastqToFasta.py $fastq ${sample_id}.fasta
-  shasta --input ${sample_id}.fasta
+  FastqToFasta.py ${fastq} ${name}.fasta
+  shasta --input ${name}.fasta
   """
 }
 
@@ -105,7 +105,7 @@ process racon {
 
   input:
   path(contig)
-  path(fastq)
+  val(fastq)
 
   output:
   path "*.paf", emit: minimap_output
@@ -116,8 +116,8 @@ process racon {
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate preassembly
-  minimap2 $contig $fastq -o ${sample_id}.paf
+  minimap2 ${contig} ${fastq} -o ${sample_id}.paf
   micromamba activate racon
-  racon $fastq ${sample_id}.paf $contig > ${sample_id}_racon.fasta
+  racon ${fastq} ${sample_id}.paf ${contig} > ${sample_id}_racon.fasta
   """
 }

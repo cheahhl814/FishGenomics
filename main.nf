@@ -8,6 +8,7 @@ params.conRef = "${launchDir}/contaminants/*.fasta" // Contaminant reference dat
 params.resultDir = './results' // Directory for all results
 
 // Parameters (Assembly)
+params.sample_id = ""
 params.genomeSize = ""
 params.reference_genome = "${launchDir}/*.{fa,fasta,fna}"
 
@@ -58,10 +59,11 @@ workflow preAssembly {
 
 workflow canuWf {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set
+  name = Channel.value(params.sample_id)
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
 
-  canu(fastq, genomeSize)
+  canu(fastq, genomeSize, name)
   racon(canu.out.canu_contig, fastq)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
@@ -72,11 +74,12 @@ workflow canuWf {
 }
 
 workflow wtdbg2Wf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set
+  name = Channel.value(params.sample_id)
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
 
-  wtdbg2(fastq, genomeSize)
+  wtdbg2(fastq, genomeSize, name)
   racon(wtdbg2.out.wtdbg2_contig, fastq)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
@@ -87,7 +90,7 @@ workflow wtdbg2Wf {
 }
 
 workflow flyeWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
@@ -103,7 +106,7 @@ workflow flyeWf {
 }
 
 workflow ravenWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set
   reference_genome = Channel.fromPath(params.reference_genome)
 
   raven(fastq)
@@ -117,10 +120,11 @@ workflow ravenWf {
 }
 
 workflow shastaWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set
   reference_genome = Channel.fromPath(params.reference_genome)
+  name = Channel.value(params.sample_id)
 
-  shasta(fastq)
+  shasta(fastq, name)
   racon(shasta.out.shasta_contig, fastq)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
