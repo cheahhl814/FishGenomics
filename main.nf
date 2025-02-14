@@ -52,7 +52,7 @@ workflow preAssembly {
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collectFile(name: 'fastq.txt'))
   buildIndex(conRef)
   mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
-  filterReads(mapReads.out.contaminantsID, filtlong.out.filtlong_fastq)
+  filterReads(mapReads.out.contaminantsID.collectFile(name: 'ids.txt'), filtlong.out.filtlong_fastq)
 }
 
 workflow canuWf {

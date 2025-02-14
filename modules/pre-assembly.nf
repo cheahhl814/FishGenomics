@@ -111,10 +111,11 @@ process filterReads {
 
     script:
     def ids = contaminantID.collect { "$it" }.join(' ')
+    def sample_id = fastq.baseName
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
     cat $ids | sort | uniq > contaminantID_all.txt
-    seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > decontaminated.fastq
+    seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > ${sample_id}_decontaminated.fastq
     """
 }
