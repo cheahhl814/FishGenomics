@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
-params.fastq = "" // Input WGS long read fastq files
+params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
 params.conRef = "${launchDir}/contaminants/*.fasta" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
 
@@ -44,8 +44,8 @@ workflow install {
 }
 
 workflow preAssembly {
-  fastqs = Channel.fromPath(params.fastq).collect().set()
-  fastq = Channel.fromPath(params.fastq)
+  fastqs = Channel.fromPath("${params.fastq}").collect().set()
+  fastq = Channel.fromPath("${params.fastq}")
   conRef = Channel.fromPath(params.conRef)
 
   nanoplot_raw(fastqs)
