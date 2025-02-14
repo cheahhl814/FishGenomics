@@ -58,7 +58,8 @@ workflow preAssembly {
 }
 
 workflow canuWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  .collect().set()
   name = Channel.value(params.sample_id)
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)

@@ -39,7 +39,7 @@ process porechop {
 
 process filtlong {
     tag "Quality filtering of reads"
-    publishDir "./results/pre-aasembly/filtlong", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/pre-assembly/filtlong", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     path(fastq)
