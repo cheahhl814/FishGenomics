@@ -65,8 +65,9 @@ nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
 - `./results/`
 
 ## Workflows
-1. Read QC and filtering: `preAssembly`
-2. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
-3. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
+1. Install dependencies: `install`
+2. Read QC and filtering: `preAssembly`
+3. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
+4. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
 
 ## 
