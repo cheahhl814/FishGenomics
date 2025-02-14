@@ -12,6 +12,8 @@ process canu {
   script:
   def sample_id = fastq.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate canu
   canu -p $sample_id genomeSize=$genomeSize -nanopore $fastq
   """
 }
@@ -30,6 +32,8 @@ process wtdbg2 {
   script:
   def sample_id = fastq.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate wtdbg
   wtdbg2 -t ${task.cpus} -x ont -g $genomeSize -fo $baseName -x ont -i $fastq
   wtpoa-cns -t ${task.cpus} -i ${baseName}.ctg.lay.gz -fo ${baseName}.ctg.fa
   """
@@ -49,6 +53,8 @@ process flye {
 
   script:
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate flye
   flye -t ${task.cpus} --genome-size $genomeSize --out-dir $flyeDir --nano-raw $fastq
   """
 }
@@ -66,6 +72,8 @@ process raven {
 
   script:
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate raven
   raven -t ${task.cpus} $fastq
   """
 }
@@ -84,6 +92,8 @@ process shasta {
   script:
   def sample_id = fastq.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate shasta
   FastqToFasta.py $fastq ${sample_id}.fasta
   shasta --input ${sample_id}.fasta
   """
@@ -104,7 +114,10 @@ process racon {
   script:
   def sample_id = contig.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate preassembly
   minimap2 $contig $fastq -o ${sample_id}.paf
+  micromamba activate racon
   racon $fastq ${sample_id}.paf $contig > ${sample_id}_racon.fasta
   """
 }
