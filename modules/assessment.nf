@@ -18,7 +18,7 @@ process quast {
   def sample_id = contig.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate assessment
+  micromamba activate quast
   quast.py -t ${task.cpus} -l $sample_id $contig -r $reference
   """
 }
@@ -41,7 +41,7 @@ process busco {
   def sample_id = genome.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate assessment
+  micromamba activate busco
   busco -c ${task.cpus} -i $genome --auto-lineage-euk -o $sample_id -m genome
   """
 }

@@ -102,8 +102,6 @@ process getBusco {
     """
 }
 
-}
-
 process getReconciliation {
     tag "Install RagTag and Quickmerge"
 
