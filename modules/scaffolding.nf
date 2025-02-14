@@ -17,6 +17,8 @@ process scaffold {
   script:
   def sample_id = contig.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate reconciliation
   ragtag.py correct $reference $contig -t ${task.cpus} -R $fastq -T ont
   ragtag.py scaffold $reference $contig -r -t ${task.cpus}
   """
@@ -36,6 +38,8 @@ process patch {
 
   script:
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate reconciliation
   ragtag.py patch $target $query -t ${task.cpus}
   """
 }
@@ -59,6 +63,8 @@ process scaffold2 {
   script:
   def sample_id = contig.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate reconciliation
   ragtag.py correct $reference $contig -t ${task.cpus} -R $fastq -T ont
   ragtag.py scaffold $reference $contig -r -t ${task.cpus}
   """
@@ -79,6 +85,8 @@ process quickmerge {
   def primary_id = primary.baseName
   def secondary_id = secondary.baseName
   """
+  eval "\$(micromamba shell hook --shell bash)"
+  micromamba activate reconciliation
   merge_wrapper.py $primary $secondary --prefix ${primary_id}_${secondary_id}
   """
 }
