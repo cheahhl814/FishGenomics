@@ -6,7 +6,6 @@ process nanoplot {
   val(fastqs)
 
   output:
-  path "*.tsv", emit: tsv
   path "*.png", emit: png
   path "*.html", emit: html
 
