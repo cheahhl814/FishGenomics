@@ -43,20 +43,21 @@ workflow install {
 }
 
 workflow preAssembly {
-  fastq = Channel.fromPath(params.fastq).map { file -> def baseName = file.baseName.replaceAll(/\.(fastq|fq)$/, ''); [baseName, file] }.groupTuple()
+  fastqs = Channel.fromPath(params.fastq).collect().set
+  fastq = Channel.fromPath(params.fastq)
   conRef = Channel.fromPath(params.conRef)
 
-  nanoplot_raw(fastq.collectFile(name: 'fastq.txt'))
+  nanoplot_raw(fastqs)
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
-  nanoplot_trimmed(filtlong.out.filtlong_fastq.collectFile(name: 'fastq.txt'))
+  nanoplot_trimmed(filtlong.out.filtlong_fastq)
   buildIndex(conRef)
   mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
-  filterReads(mapReads.out.contaminantsID.collectFile(name: 'ids.txt'), filtlong.out.filtlong_fastq)
+  filterReads(mapReads.out.contaminantsID.collect(), filtlong.out.filtlong_fastq)
 }
 
 workflow canuWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
 

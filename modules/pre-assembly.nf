@@ -3,7 +3,7 @@ process nanoplot {
   publishDir "./results/pre-assembly/nanoplot", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  tuple val(baseName), path(fastq)
+  val(fastqs)
 
   output:
   path "*.tsv", emit: tsv
@@ -11,11 +11,11 @@ process nanoplot {
   path "*.html", emit: html
 
   script:
-  def fastq = fastq.collect { "$it" }.join(' ')
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate preassembly
-  NanoPlot --threads ${task.cpus} --fastq $fastq --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report --prefix $baseName
+  NanoPlot --threads ${task.cpus} --fastq ${fastq} --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
   """
 }
 
@@ -24,17 +24,17 @@ process porechop {
   publishDir "./results/pre-assembly/porechop", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  tuple val(baseName), path(fastq)
+  path(fastq)
 
   output:
   path "*_porechop.fastq", emit: porechop_fastq
 
   script:
-  def fastq = fastq.collect { "$it" }.join(' ')
+  def sample_id = fastq.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate preassembly
-  porechop --threads $task.cpus -i $fastq -o ${baseName}_porechop.fastq --format fastq
+  porechop --threads $task.cpus -i $fastq -o ${sample_id}_porechop.fastq --format fastq
   """
 }
 
@@ -43,18 +43,18 @@ process filtlong {
     publishDir "./results/pre-aasembly/filtlong", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    tuple val(baseName), path(fastq)
+    path(fastq)
 
     output:
     path "*.fastq", emit: filtlong_fastq
     path "*.log", emit: filtlong_log
 
     script:
-    def fastq = fastq.collect { "$it" }.join(' ')
+    def sample_id = fastq.baseName
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    filtlong --min_length 1000 --keep_percent 90 $fastq | gzip > ${baseName}_filtlong.fastq 2>&1 | tee ${baseName}_filtlong.log
+    filtlong --min_length 1000 --keep_percent 90 $fastq | gzip > ${sample_id}_filtlong.fastq 2>&1 | tee ${sample_id}_filtlong.log
     """
 }
 
@@ -83,18 +83,19 @@ process mapReads {
 
     input:
     path(index)
-    tuple val(baseName), path(fastq)
+    path(fastq)
 
     output:
     path "*_ids.txt", emit: contaminantsID
 
     script:
     def contaminant_id = index.baseName
+    def sample_id = fastq.baseName
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    minimap2 -t ${task.cpus} -ax map-ont $index $fastq > ${contaminant_id}.sam
-    samtools view -F 4 ${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${contaminant_id}_ids.txt
+    minimap2 -t ${task.cpus} -ax map-ont $index $fastq > ${sample_id}_${contaminant_id}.sam
+    samtools view -F 4 ${sample_id}_${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${sample_id}_${contaminant_id}_ids.txt
     """
 }
 
@@ -103,19 +104,19 @@ process filterReads {
     publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    tuple val(baseName), path(contaminantID)
-    tuple val(baseName), path(fastq)
+    val(contaminantID)
+    path(fastq)
 
     output:
     path "decontaminated.fastq", emit: fastq
 
     script:
-    def ids = contaminantID.collect { "$it" }.join(' ')
+    def ids = contaminantID.join(" ")
     def sample_id = fastq.baseName
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    cat $ids | sort | uniq > contaminantID_all.txt
+    cat ${ids} | sort | uniq > contaminantID_all.txt
     seqkit grep -j ${task.cpus} -v -f contaminantID_all.txt $fastq > ${sample_id}_decontaminated.fastq
     """
 }
