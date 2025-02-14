@@ -17,9 +17,27 @@ process getAssembly {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n assembly -y
-    micromamba activate assembly
-    micromamba install -y -c bioconda -c conda-forge canu flye raven shasta wtdbg racon mummer4
+    micromamba create -n canu -y
+    micromamba activate canu
+    micromamba install -y -c bioconda canu
+    micromamba create -n flye -y
+    micromamba activate flye
+    micromamba install -y -c bioconda flye
+    micromamba create -n raven -y
+    micromamba activate raven
+    micromamba install -y -c bioconda raven
+    micromamba create -n shasta -y
+    micromamba activate shasta
+    micromamba install -y -c bioconda shasta
+    micromamba create -n wtdbg -y
+    micromamba activate wtdbg
+    micromamba install -y -c bioconda wtdbg
+    micromamba create -n racon -y
+    micromamba activate racon
+    micromamba install -y -c bioconda racon
+    micromamba create -n mummer4 -y
+    micromamba activate mummer4
+    micromamba install -y -c bioconda mummer4
     micromamba create -n assessment -y
     micromamba install -y -c bioconda -c conda-forge busco quast 
     """
