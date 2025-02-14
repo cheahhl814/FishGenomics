@@ -8,6 +8,7 @@ process getPreassembly {
     micromamba activate preassembly
     micromamba install -y -c bioconda -c conda-forge porechop filtlong minimap2 samtools pip seqkit
     pip install nanoplot
+    pip install multiqc
     """
 }
 
@@ -104,7 +105,7 @@ process getBusco {
 }
 
 process getReconciliation {
-    tag "Install dependencies required for the reconciliation workflows"
+    tag "Install RagTag and Quickmerge"
 
     script:
     """
