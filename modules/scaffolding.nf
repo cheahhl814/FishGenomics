@@ -5,7 +5,7 @@ process scaffold {
   input:
   path(contig)
   path(reference)
-  path(fastq)
+  val(fastqs)
 
   output:
   path "ragtag.correct.fasta", emit: correct_fasta
@@ -16,11 +16,12 @@ process scaffold {
 
   script:
   def sample_id = contig.baseName
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate reconciliation
-  ragtag.py correct $reference $contig -t ${task.cpus} -R $fastq -T ont
-  ragtag.py scaffold $reference $contig -r -t ${task.cpus}
+  ragtag.py correct ${reference} ${contig} -t ${task.cpus} -T ont -R ${fastq}
+  ragtag.py scaffold ${reference} ${contig} -r -t ${task.cpus}
   """
 }
 
@@ -40,7 +41,7 @@ process patch {
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate reconciliation
-  ragtag.py patch $target $query -t ${task.cpus}
+  ragtag.py patch ${target} ${query} -t ${task.cpus}
   """
 }
 
@@ -51,7 +52,7 @@ process scaffold2 {
   input:
   path(contig)
   path(reference)
-  path(fastq)
+  val(fastqs)
 
   output:
   path "ragtag.correct.fasta", emit: correct_fasta
@@ -61,12 +62,13 @@ process scaffold2 {
   path "ragtag.scaffold.stats", emit: scaffold_stats
 
   script:
+  def fastq = fastqs.join(" ")
   def sample_id = contig.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate reconciliation
-  ragtag.py correct $reference $contig -t ${task.cpus} -R $fastq -T ont
-  ragtag.py scaffold $reference $contig -r -t ${task.cpus}
+  ragtag.py correct ${reference} ${contig} -t ${task.cpus} -T ont -R ${fastq}
+  ragtag.py scaffold ${reference} ${contig} -r -t ${task.cpus}
   """
 }
 
@@ -87,6 +89,6 @@ process quickmerge {
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate reconciliation
-  merge_wrapper.py $primary $secondary --prefix ${primary_id}_${secondary_id}
+  merge_wrapper.py ${primary} ${secondary} --prefix ${primary_id}_${secondary_id}
   """
 }

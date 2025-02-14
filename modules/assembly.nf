@@ -3,7 +3,7 @@ process canu {
   publishDir "./results/assembly/canu", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  val(fastq)
+  val(fastqs)
   val(genomeSize)
   val(name)
 
@@ -11,6 +11,7 @@ process canu {
   path "*.contigs.fasta", emit: canu_contig
 
   script:
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate canu
@@ -23,7 +24,7 @@ process wtdbg2 {
   publishDir "./results/assembly/wtdbg2", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  val(fastq)
+  val(fastqs)
   val(genomeSize)
   val(name)
 
@@ -31,6 +32,7 @@ process wtdbg2 {
   path "*.ctg.fa", emit: wtdbg2_contig
 
   script:
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate wtdbg
@@ -44,7 +46,7 @@ process flye {
   publishDir "./results/assembly/flye", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  val(fastq)
+  val(fastqs)
   val(genomeSize)
   path(flyeDir)
 
@@ -52,6 +54,7 @@ process flye {
   path "*.fasta", emit: flye_contig
 
   script:
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate flye
@@ -64,13 +67,14 @@ process raven {
   publishDir "./results/assembly/raven", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  val(fastq)
+  val(fastqs)
 
   output:
   path "*.fasta.gz", emit: raven_contig
   path "*.gfa.gz", emit: raven_gfa
 
   script:
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate raven
@@ -84,13 +88,14 @@ process shasta {
   publishDir "./results/assembly/shasta", mode: 'copy', overwrite: false
 
   input:
-  val(fastq)
+  val(fastqs)
   val(name)
 
   output:
   path "Assembly.fasta", emit: shasta_contig
 
   script:
+  def fastq = fastqs.join(" ")
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate shasta
@@ -105,13 +110,14 @@ process racon {
 
   input:
   path(contig)
-  val(fastq)
+  val(fastqs)
 
   output:
   path "*.paf", emit: minimap_output
   path "*_racon.fasta", emit: polished_fasta
 
   script:
+  def fastq = fastqs.join(" ")
   def sample_id = contig.baseName
   """
   eval "\$(micromamba shell hook --shell bash)"

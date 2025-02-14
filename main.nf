@@ -141,7 +141,7 @@ workflow reconciliationRagTag {
   scaffold3 = Channel.fromPath(params.thirdA)
   scaffold4 = Channel.fromPath(params.fourthA)
   scaffold5 = Channel.fromPath(params.fifthA)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set
   reference_genome = Channel.fromPath(params.reference_genome)
 
   // Genome reconciliation workflow
