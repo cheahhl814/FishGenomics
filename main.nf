@@ -44,7 +44,7 @@ workflow install {
 }
 
 workflow preAssembly {
-  fastqs = Channel.fromPath("${params.fastq}").collect().set()
+  fastqs = Channel.fromPath("${params.fastq}").collect()
   fastq = Channel.fromPath("${params.fastq}")
   conRef = Channel.fromPath(params.conRef)
 
