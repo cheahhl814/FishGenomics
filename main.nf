@@ -51,7 +51,7 @@ workflow preAssembly {
   nanoplot_raw(fastqs)
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
-  nanoplot_trimmed(filtlong.out.filtlong_fastq)
+  nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
   buildIndex(conRef)
   mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
   filterReads(mapReads.out.contaminantsID.collect(), filtlong.out.filtlong_fastq)
