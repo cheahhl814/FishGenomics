@@ -15,7 +15,7 @@ process nanoplot {
   """
   eval "\$(micromamba shell hook --shell bash)"
   micromamba activate preassembly
-  NanoPlot --threads ${task.cpus} --fastq $fastq --maxlength 40000 --tsv_stats --plots dot --format png --legacy hex --info_in_report --prefix $baseName
+  NanoPlot --threads ${task.cpus} --fastq $fastq --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report --prefix $baseName
   """
 }
 
