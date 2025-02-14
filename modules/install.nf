@@ -39,6 +39,7 @@ process getAssembly {
     micromamba activate mummer4
     micromamba install -y -c bioconda mummer4
     micromamba create -n assessment -y
+    micromamba activate assessment
     micromamba install -y -c bioconda -c conda-forge busco quast 
     """
 }
