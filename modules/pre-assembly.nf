@@ -53,7 +53,7 @@ process filtlong {
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    filtlong --min_length 1000 --keep_percent 90 ${fastq} | gzip > ${sample_id}_filtlong.fastq 2>&1 | tee ${sample_id}_filtlong.log
+    filtlong --min_length 1000 --keep_percent 90 ${fastq} > ${sample_id}_filtlong.fastq
     """
 }
 
