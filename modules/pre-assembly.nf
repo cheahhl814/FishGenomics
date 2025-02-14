@@ -93,7 +93,7 @@ process mapReads {
     """
     eval "\$(micromamba shell hook --shell bash)"
     micromamba activate preassembly
-    minimap2 -t ${task.cpus} -ax map-ont $index $fastq > ${sample_id}_${contaminant_id}.sam
+    minimap2 -t ${task.cpus} -ax map-ont ${index} ${fastq} > ${sample_id}_${contaminant_id}.sam
     samtools view -F 4 ${sample_id}_${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${sample_id}_${contaminant_id}_ids.txt
     """
 }
