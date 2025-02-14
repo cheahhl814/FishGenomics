@@ -6,7 +6,7 @@ process getPreassembly {
     eval "\$(micromamba shell hook --shell bash)"
     micromamba create -n preassembly -y
     micromamba activate preassembly
-    micromamba install -y -c bioconda -c conda-forge porechop filtlong minimap2 samtools pip seqkit
+    micromamba install -y -c bioconda -c conda-forge porechop filtlong minimap2 samtools pip seqkit seaborn matplotlib
     pip install nanoplot
     pip install multiqc
     """
