@@ -17,8 +17,6 @@ process quast {
   script:
   def sample_id = contig.baseName
   """
-  eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate quast
   quast.py -t ${task.cpus} -l $sample_id $contig -r $reference
   """
 }
@@ -40,8 +38,6 @@ process busco {
   script:
   def sample_id = genome.baseName
   """
-  eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate busco
   busco -c ${task.cpus} -i $genome --auto-lineage-euk -o $sample_id -m genome
   """
 }
@@ -62,8 +58,6 @@ process galignment {
   script:
   def sample_id = scaffold.baseName
   """
-  eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate mummer4
   dnadiff -p $sample_id $reference $scaffold
   mummerplot -p $sample_id -t $sample_id --png $delta
   """
