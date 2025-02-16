@@ -9,8 +9,6 @@ process multiqc {
 
     script:
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
     multiqc $raw_reports
     """
 }
