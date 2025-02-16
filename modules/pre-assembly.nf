@@ -12,8 +12,6 @@ process nanoplot {
   script:
   def fastq = fastqs.join(" ")
   """
-  eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate preassembly
   NanoPlot --threads ${task.cpus} --fastq ${fastq} --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
   """
 }
@@ -31,8 +29,6 @@ process porechop {
   script:
   def sample_id = fastq.baseName
   """
-  eval "\$(micromamba shell hook --shell bash)"
-  micromamba activate preassembly
   porechop --threads $task.cpus -i $fastq -o ${sample_id}_porechop.fastq --format fastq
   """
 }
@@ -51,8 +47,6 @@ process filtlong {
     script:
     def sample_id = fastq.baseName
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
     filtlong --min_length 1000 --keep_percent 90 ${fastq} > ${sample_id}_filtlong.fastq
     """
 }
@@ -70,8 +64,6 @@ process buildIndex {
     script:
     def genome_id = genome.baseName
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
     minimap2 -d ${genome_id}.mmi $genome
     """
 }
@@ -91,8 +83,6 @@ process mapReads {
     def contaminant_id = index.baseName
     def sample_id = fastq.baseName
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
     minimap2 -t ${task.cpus} -ax map-ont ${index} ${fastq} > ${sample_id}_${contaminant_id}.sam
     samtools view -F 4 ${sample_id}_${contaminant_id}.sam | awk '{print \$1}' | sort | uniq > ${sample_id}_${contaminant_id}_ids.txt
     """
@@ -113,8 +103,6 @@ process filterReads {
     def ids = contaminantID.join(" ")
     def sample_id = fastq.baseName
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
     cat ${ids} | sort | uniq | seqkit grep -j ${task.cpus} -v -f - ${fastq} > ${sample_id}_decontaminated.fastq
     """
 }
