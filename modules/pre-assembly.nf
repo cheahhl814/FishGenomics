@@ -42,7 +42,6 @@ process filtlong {
 
     output:
     path "*_filtlong.fastq", emit: filtlong_fastq
-    path "*_filtlong.log", emit: filtlong_log
 
     script:
     def sample_id = fastq.baseName
