@@ -43,10 +43,6 @@ You can select whether to run it on local desktop (using Micromamba) or HPC syst
 ```bash
 nextflow run cheahhl814/FishGenomics -entry [workflow_name] -profile [local,hpc] [parameters]
 ```
-You can also run it with your custom Nextflow configuration file:
-```bash
-nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [customConfigFile]
-```
 
 ### Parameters (Pre-assembly)
 ```bash
@@ -71,6 +67,12 @@ nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
 
 ### Output Directories
 - `./results/`
+
+### Custom Configuration
+We understand that some tools required in this pipeline may be not available on your HPC system. In that case, you can run the pipeline with your custom configuration file (template: https://github.com/cheahhl814/FishGenomics/blob/main/customNextflow.config):
+```bash
+nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [customConfigFile]
+```
 
 ## Workflows
 1. Install dependencies: `installLocal`
