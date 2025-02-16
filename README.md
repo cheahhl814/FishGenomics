@@ -18,16 +18,18 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
     mv nextflow $HOME/.local/bin/
     ```
 - Micromamba (Recommended) (for tool dependencies)
+    To install micromamba, run:
     ```bash
     "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
     ```
 - Tool dependencies
+    To install dependencies, run:
     ```bash
-    nextflow run cheahhl814/FishGenomics -entry install -profile local
+    nextflow run cheahhl814/FishGenomics -entry installLocal -profile local
     ```
-- Input ONT reads (.fastq) in current directory
-- Contaminant genomes (.fasta) in the `contaminants/` folder of current directory (Curated contaminant genomes can be downloaded here: https://figshare.com/s/5c99c88a2bfb5e13f33c)
-- Reference genome (.fasta, for scaffolding) in current directory
+- Input ONT reads (`.fastq`) in current directory
+- Contaminant genomes (`.fasta`) in the `contaminants/` folder of current directory (Curated contaminant genomes can be downloaded here: https://figshare.com/s/5c99c88a2bfb5e13f33c)
+- Reference genome (`.fasta`, for scaffolding) in current directory
 
 ## Usage
 
@@ -38,6 +40,10 @@ nextflow run main.nf -entry [workflow_name] [parameters]
 You can also run it directly without cloning/downloading the script using:
 ```bash
 nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters]
+```
+You can also run it with your custom Nextflow configuration file:
+```bash
+nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [customConfigFile]
 ```
 
 ### Parameters (Pre-assembly)
@@ -65,7 +71,7 @@ nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
 - `./results/`
 
 ## Workflows
-1. Install dependencies: `install`
+1. Install dependencies: `installLocal`
 2. Read QC and filtering: `preAssembly`
 3. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
 4. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
