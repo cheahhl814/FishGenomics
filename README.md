@@ -17,13 +17,11 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
     chmod +x nextflow
     mv nextflow $HOME/.local/bin/
     ```
-- Micromamba (Recommended) (for tool dependencies)
-To install micromamba, run:
+- Micromamba (Recommended) (for tool dependencies). To install micromamba, run:
     ```bash
     "${SHELL}" <(curl -L micro.mamba.pm/install.sh)
     ```
-- Tool dependencies
-To install dependencies, run:
+- Tool dependencies. To install dependencies, run:
     ```bash
     nextflow run cheahhl814/FishGenomics -entry installLocal -profile local
     ```
