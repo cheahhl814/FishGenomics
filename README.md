@@ -41,6 +41,10 @@ You can also run it directly without cloning/downloading the script using:
 ```bash
 nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters]
 ```
+You can select whether to run it on local desktop (using Micromamba) or HPC system (SLURM):
+```bash
+nextflow run cheahhl814/FishGenomics -entry [workflow_name] -profile [local,hpc] [parameters]
+```
 You can also run it with your custom Nextflow configuration file:
 ```bash
 nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [customConfigFile]
@@ -75,5 +79,3 @@ nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
 2. Read QC and filtering: `preAssembly`
 3. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
 4. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
-
-## 
