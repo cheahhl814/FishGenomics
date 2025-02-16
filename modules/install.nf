@@ -68,7 +68,7 @@ process getRacon {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n racon -y -c bioconda racon
+    micromamba create -n racon -y -c bioconda racon minimap2
     """
 }
 
