@@ -117,7 +117,7 @@ process mtAnnotate {
     """
 }
 
-process mtTree {
+process mtOrtho {
     tag "Construct core mitogenome phylogenetic tree"
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
@@ -133,4 +133,39 @@ process mtTree {
     cp ${mtProteinN} ${treeDir}
     orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${treeDir}
     """
+}
+
+process trimMSA {
+  tag "Removing gaps in alignment"
+  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+
+  input:
+  path(msa)
+
+  output:
+  path "*_trimal.fasta", emit: trimal_fasta
+  path "*_trimal.html", emit: trimal_html
+
+  script:
+  def sample_id = msa.baseName
+  """
+  trimal -in ${msa} -out ${sample_id}_trimal.fasta -htmlout ${sample_id}_trimal.html -nogaps -terminalonly
+  """
+}
+
+process mtTree {
+  tag "Building phylogenetic tree"
+  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+
+  input:
+  path(trimal_fasta)
+
+  output:
+  path "*.raxml.*", emit: tree
+
+  script:
+  def sample_id = trimal_fasta.baseName
+  """
+  raxml-ng --all --msa ${trimal_fasta} --model GTR+G+I --bs-metric fbp,tbe --tree pars{25},rand{25} --bs-trees 1000 --prefix ${sample_id} --force
+  """
 }

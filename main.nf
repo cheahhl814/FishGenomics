@@ -8,7 +8,7 @@ params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference datab
 params.resultDir = './results' // Directory for all results
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
 params.firstGene = "" // FASTA sequences of genes to use as start point
-params.treeDir = "${launchDir}/orthofinder_input"
+params.orthoDir = "${launchDir}/orthofinder_input"
 
 // Parameters (Assembly)
 params.sample_id = ""
@@ -74,7 +74,7 @@ workflow mitoAssembly {
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal)
-  mtTree(mtAnnotate.out.mtProteinN, treeDir)
+  mtOrtho(mtAnnotate.out.mtProteinN, orthoDir)
 }
 
 workflow canuWf {
