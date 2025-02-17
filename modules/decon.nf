@@ -20,7 +20,20 @@ process ganonClassify {
 }
 
 process decon {
-    tag ""
-}
+    tag "Filter out contaminant reads"\
+    publishDir "./results/decon", mode: 'copy', overwrite: false, pattern: '**'
 
-cat ${one} | cut -f 1 | sort | uniq | seqkit grep -v -f - ${fastq} > ${decon_fastq}
+    input:
+    val(ones)
+    path{fastq}
+
+    output:
+    path ""
+
+    script:
+    def one = ones.join{" "}
+    def sample_id = fastq.baseName
+    """
+    cat ${one} | cut -f 1 | sort | uniq | seqkit grep -v -f - ${fastq} > ${sample_id}_decontaminated.fastq
+    """
+}
