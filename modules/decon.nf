@@ -15,7 +15,7 @@ process ganonClassify {
     def database_id = tsv.baseName
     def fastq = fastqs.join(" ")
     """
-    ganon build-custom --input-target sequence --level file --input-file ${tsv} --db-prefix ${database_id} --threads ${task.cpus}
+    ganon build-custom --input-target file --level file --taxonomy skip --input-file ${tsv} --db-prefix ${database_id} --threads ${task.cpus}
     cat ${fastq} | ganon classify --db-prefix ${database_id} --single-reads - --output-one --output-prefix ganonClassify --threads ${task.cpus}
     """
 }
