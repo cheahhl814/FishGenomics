@@ -25,8 +25,8 @@ params.fourthA = ""
 params.fifthA = ""
 
 // Parameters (Annotation)
-params.finalAsm = ''
-params.annotation_stats = ''
+params.finalAsm = ""
+params.annotation_stats = ""
 params.species = ""
 params.buscodb = ""
 
