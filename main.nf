@@ -24,6 +24,12 @@ params.thirdA = ''
 params.fourthA = ''
 params.fifthA = ''
 
+// Parameters (Annotation)
+params.finalAsm = ''
+params.annotation_stats = ''
+params.species = ""
+params.buscodb = ""
+
 // Module inclusion
 include { getPreassembly; getCanu; getFlye; getRaven; getShasta; getwtdbg2; getRacon; getMummer; getQuast; getBusco; getReconciliation } from './modules/installLocal.nf'
 include { identifymtDNA; segregateReads; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
@@ -208,6 +214,22 @@ workflow reconciliationQuickmerge {
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   galignment(racon.out.scaffold_fasta, reference_genome)
+}
+
+workflow annotation {
+  // Input channel for the final genome assembly
+  input_assembly = Channel.fromPath("${params.finalAsm}")
+  annotation_stats = Channel.fromPath("${params.annotation_stats}", type: 'dir')
+  species = Channel.value("${params.species}")
+  buscodb = Channel.value("${params.buscodb}")
+
+  // Annotation workflow
+  funClean(input_assembly)
+  funSort(funClean.out.cleanGenome)
+  funMask(funSort.out.sortGenome)
+  funPredict(funMask.out.maskGenome, species, buscodb)
+  funAnnotate(funPredict.out, buscodb)
+  annotationStats(annotateGenes.out.finalGFF)
 }
 
 workflow generateReport {
