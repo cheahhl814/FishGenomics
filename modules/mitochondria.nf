@@ -130,6 +130,6 @@ process mtTree {
     script:
     """
     cp ${mtProteinN} ${treeDir}
-    orthofinder -t ${task.cpus} -d -M msa -A mafft -f ${treeDir}
+    orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${treeDir}
     """
 }
