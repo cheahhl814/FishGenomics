@@ -12,6 +12,18 @@ process getPreassembly {
     """
 }
 
+process getDecon {
+    tag "Install Ganon"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n decon -y
+    micromamba activate decon
+    micromamba install -y -c bioconda ganon seqkit
+    """
+}
+
 process getCanu {
     tag "Install Canu"
 

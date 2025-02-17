@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
 params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
-params.conRef = "${launchDir}/contaminants/*.fasta" // Contaminant reference database
+params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
 
 // Parameters (Assembly)
@@ -26,11 +26,13 @@ include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
 include { quast; quast as quast_scaffold; busco; busco as busco_scaffold; galignment } from './modules/assessment.nf'
 include { multiqc as preassemblyReport; multiqc as assemblyReport } from './modules/multiqc.nf'
+include { ganonClassify; decon } from './modules/decon.nf'
 
 // Workflows
 
 workflow installLocal {
   getPreassembly()
+  getDecon()
   getCanu()
   getFlye()
   getRaven()
@@ -46,15 +48,14 @@ workflow installLocal {
 workflow preAssembly {
   fastqs = Channel.fromPath("${params.fastq}").collect()
   fastq = Channel.fromPath("${params.fastq}")
-  conRef = Channel.fromPath("${params.conRef}")
+  conFiles = Channel.fromPath("${params.conFiles}")
 
   nanoplot_raw(fastqs)
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
-  buildIndex(conRef)
-  mapReads(buildIndex.out.mmi, filtlong.out.filtlong_fastq)
-  filterReads(mapReads.out.contaminantsID.collect(), filtlong.out.filtlong_fastq)
+  ganonClassify(fastq, conFiles)
+  decon(ganonClassify.out.one.collect(), fastq)
 }
 
 workflow canuWf {
