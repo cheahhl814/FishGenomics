@@ -4,10 +4,13 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 
 ## Features
 - Pre-assembly QC and read processing
-- Multiple assembly methods (Canu, wtdbg2, Flye, Raven, Shasta)
-- Assembly polishing with Racon
+- Removal of contaminant reads
+- Mitochondrial genome assembly, annotation, and phylogenetic analysis
+- Multiple WGA methods (Canu, wtdbg2, Flye, Raven, Shasta)
+- Polishing with Racon
+- Genome reconciliation using RagTag or Quickmerge
 - Assembly evaluation (QUAST, BUSCO)
-- Genome reconciliation using RagTag and Quickmerge
+- Genome annotation (Funannotate)
 - MultiQC report generation
 
 ## Requirements
@@ -48,7 +51,10 @@ nextflow run cheahhl814/FishGenomics -entry [workflow_name] -profile [local,hpc]
 ```bash
 nextflow run main.nf -entry preAssembly [parameters]
 ```
-
+### Parameters (Mitochondrial genome assembly)
+```bash
+nextflow run main.nf -entry mitoAssembly [parameters]
+```
 ### Parameters (Assembly)
 ```bash
 nextflow run main.nf -entry [canuWf,wtdbg2Wf,flyeWf,ravenWf,shastaWf] --genomeSize "estimated_size"
@@ -77,5 +83,6 @@ nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [cus
 ## Workflows
 1. Install dependencies: `installLocal`
 2. Read QC and filtering: `preAssembly`
-3. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
-4. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
+3. Mitochondrial genome assembly: `mitoAssembly`
+4. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
+5. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
