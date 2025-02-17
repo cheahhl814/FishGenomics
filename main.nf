@@ -6,6 +6,7 @@ nextflow.enable.dsl=2
 params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
 params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
+params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
 
 // Parameters (Assembly)
 params.sample_id = ""
@@ -56,6 +57,17 @@ workflow preAssembly {
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
   ganonClassify(fastq, conFiles)
   decon(ganonClassify.out.one.collect(), fastq)
+}
+
+workflow mitoAssembly {
+  mitoDNA = Channel.fromPath("${params.refmtDNA}")
+  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq")
+  asmDir = Channel.fromPath("${params.resultDir}/mtGenome/flye", type: 'dir')
+
+  identifymtDNA(fastq, mitoDNA)
+  segregateReads(identifymtDNA.out.one.collect(), fastq)
+  mtAssembly(segregateReads.out.mitoq.collect(), asmDir)
+  mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
 }
 
 workflow canuWf {

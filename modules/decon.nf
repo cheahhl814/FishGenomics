@@ -1,6 +1,6 @@
 process ganonClassify {
     tag "Classify reads with Ganon"
-    publishDir "./results/decon", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/pre-assembly/decon", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     path(fastq)
@@ -15,13 +15,13 @@ process ganonClassify {
     def database_id = tsv.baseName
     """
     ganon build-custom --input-target file --level file --taxonomy skip --input-file ${tsv} --db-prefix ${database_id} --threads ${task.cpus}
-    ganon classify --db-prefix ${database_id} --single-reads - --output-one --output-prefix ganonClassify --threads ${task.cpus}
+    ganon classify --db-prefix ${database_id} --single-reads ${fastq} --output-one --output-prefix ganonClassify --threads ${task.cpus}
     """
 }
 
 process decon {
     tag "Filter out contaminant reads"\
-    publishDir "./results/decon", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/pre-assembly/decon", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     val(ones)
