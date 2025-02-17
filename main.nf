@@ -5,7 +5,7 @@ nextflow.enable.dsl=2
 // Parameters (Pre-assembly)
 params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
 params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
-params.resultDir = './results' // Directory for all results
+params.resultDir = "./results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
@@ -18,11 +18,11 @@ params.genomeSize = ""
 params.reference_genome = "${launchDir}/*.{fa,fasta,fna}"
 
 // Parameters (Reconciliation)
-params.firstA = ''
-params.secondA = ''
-params.thirdA = ''
-params.fourthA = ''
-params.fifthA = ''
+params.firstA = ""
+params.secondA = ""
+params.thirdA = ""
+params.fourthA = ""
+params.fifthA = ""
 
 // Parameters (Annotation)
 params.finalAsm = ''
