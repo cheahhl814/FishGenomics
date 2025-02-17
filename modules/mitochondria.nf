@@ -126,6 +126,7 @@ process mtTree {
     path(treeDir)
 
     output:
+    path "SpeciesTreeAlignment.fa", emit: msa
 
     script:
     """
