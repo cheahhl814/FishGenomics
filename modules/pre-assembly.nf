@@ -88,7 +88,7 @@ process mapReads {
 }
 
 process filterReads {
-    tag "Map reads to contaminant genomes (microbial and human DNA)"
+    tag "Filter out contaminant reads"
     publishDir "./results/pre-assembly/minimap2", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
