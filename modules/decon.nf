@@ -28,7 +28,7 @@ process decon {
     path{fastq}
 
     output:
-    path ""
+    path "*_decontaminated.fastq", emit: deconFastq
 
     script:
     def one = ones.join{" "}
