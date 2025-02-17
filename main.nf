@@ -75,6 +75,8 @@ workflow mitoAssembly {
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal)
   mtOrtho(mtAnnotate.out.mtProteinN, orthoDir)
+  trimMSA(mtOrtho.out.msa)
+  mtTree(trimMSA.out.trimal_fasta)
 }
 
 workflow canuWf {
