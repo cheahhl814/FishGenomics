@@ -10,12 +10,12 @@ params.resultDir = "./results" // Directory for all results
 // Parameters (Mitogenome assembly)
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
 params.firstGene = "" // FASTA sequences of genes to use as start point
-params.orthoDir = "${launchDir}/orthofinder_input"
+params.orthoDir = "${launchDir}/orthofinder_input" // Input folder for Orthofinder
 
 // Parameters (Assembly)
 params.sample_id = ""
 params.genomeSize = ""
-params.reference_genome = "${launchDir}/*.{fa,fasta,fna}"
+params.reference_genome = "${launchDir}/*.{fa,fasta,fna}" // Reference genome of a closely related species
 
 // Parameters (Reconciliation)
 params.firstA = ""
@@ -25,7 +25,7 @@ params.fourthA = ""
 params.fifthA = ""
 
 // Parameters (Annotation)
-params.finalAsm = ""
+params.finalAsm = "" // Final assembly after reconciliation
 params.annotation_stats = ""
 params.species = ""
 params.buscodb = ""
