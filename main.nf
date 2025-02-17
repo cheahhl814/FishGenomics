@@ -68,6 +68,7 @@ workflow mitoAssembly {
   segregateReads(identifymtDNA.out.one.collect(), fastq)
   mtAssembly(segregateReads.out.mitoq.collect(), asmDir)
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
+  mtCircular(mtPolish.out.polished_fasta, )
 }
 
 workflow canuWf {

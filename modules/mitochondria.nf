@@ -84,10 +84,15 @@ process mtCircular {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
+    path(contig)
+    path(firstGene)
+
     output:
+    path "*_circular.fasta", emit: mtCircular
 
     script:
+    def sample_id = contig.baseName
     """
-    circlator fixstart <assembly.fasta> <output_prefix>
+    circlator fixstart ${contig} --genes_fa ${firstGene} ${sample_id}_circular
     """
 }
