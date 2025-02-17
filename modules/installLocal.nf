@@ -183,3 +183,13 @@ process getReconciliation {
     micromamba create -n reconciliation -y -c bioconda quickmerge ragtag
     """
 }
+
+process getFunannotate {
+    tag "Install Funannotate"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n funannotate -y -c bioconda funannotate
+    """
+}

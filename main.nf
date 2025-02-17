@@ -61,6 +61,7 @@ workflow installLocal {
   getQuast()
   getBusco()
   getReconciliation()
+  getFunannotate()
 }
 
 workflow preAssembly {
