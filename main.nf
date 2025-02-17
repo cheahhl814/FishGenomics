@@ -86,7 +86,7 @@ workflow mitoAssembly {
 }
 
 workflow canuWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq")
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq")
           .collect()
           .set()
   name = Channel.value(params.sample_id)
@@ -104,7 +104,7 @@ workflow canuWf {
 }
 
 workflow wtdbg2Wf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   name = Channel.value(params.sample_id)
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
@@ -120,7 +120,7 @@ workflow wtdbg2Wf {
 }
 
 workflow flyeWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
   genomeSize = Channel.value(params.genomeSize)
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
@@ -136,7 +136,7 @@ workflow flyeWf {
 }
 
 workflow ravenWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
 
   raven(fastq)
@@ -150,7 +150,7 @@ workflow ravenWf {
 }
 
 workflow shastaWf {
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
   name = Channel.value(params.sample_id)
 
@@ -171,7 +171,7 @@ workflow reconciliationRagTag {
   scaffold3 = Channel.fromPath(params.thirdA)
   scaffold4 = Channel.fromPath(params.fourthA)
   scaffold5 = Channel.fromPath(params.fifthA)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
 
   // Genome reconciliation workflow
@@ -193,7 +193,7 @@ workflow reconciliationQuickmerge {
   flyeScaffold = Channel.fromPath(params.flyeScaffold)
   ravenScaffold = Channel.fromPath(params.ravenScaffold)
   shastaScaffold = Channel.fromPath(params.shastaScaffold)
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/minimap2/*_decontaminated.fastq").collect().set()
+  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
   reference_genome = Channel.fromPath(params.reference_genome)
 
   // Genome reconciliation workflow
