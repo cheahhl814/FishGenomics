@@ -48,6 +48,42 @@ process getProkka {
     """
 }
 
+process getOrthofinder {
+    tag "Install Orthofinder"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n orthofinder -y
+    micromamba activate orthofinder
+    micromamba install -y -c bioconda orthofinder
+    """
+}
+
+process getTrimAl {
+    tag "Install TrimAl"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n trimal -y
+    micromamba activate trimal
+    micromamba install -y -c bioconda trimal
+    """
+}
+
+process getraxmlng {
+    tag "Install raxml-ng"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n raxmlng -y
+    micromamba activate raxmlng
+    micromamba install -y -c bioconda raxml-ng
+    """
+}
+
 process getCanu {
     tag "Install Canu"
 
