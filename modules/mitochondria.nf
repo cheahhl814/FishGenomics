@@ -122,10 +122,14 @@ process mtTree {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
+    path(mtProteinN)
+    path(treeDir)
+
     output:
 
     script:
     """
-    orthofinder -t 6 -a 6 -d -M msa -A mafft -f orthofinder_input/
+    cp ${mtProteinN} ${treeDir}
+    orthofinder -t 6 -a 6 -d -M msa -A mafft -f ${treeDir}
     """
 }

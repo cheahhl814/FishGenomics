@@ -8,6 +8,7 @@ params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference datab
 params.resultDir = './results' // Directory for all results
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
 params.firstGene = "" // FASTA sequences of genes to use as start point
+params.treeDir = "${launchDir}/orthofinder_input"
 
 // Parameters (Assembly)
 params.sample_id = ""
@@ -65,6 +66,7 @@ workflow mitoAssembly {
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq")
   asmDir = Channel.fromPath("${params.resultDir}/mtGenome/flye", type: 'dir')
   firstGene = Channel.fromPath("${params.firstGene}")
+  treeDir = Channel.fromPath("${params.treeDir}", type: 'dir')
 
   identifymtDNA(fastq, mitoDNA)
   segregateReads(identifymtDNA.out.one.collect(), fastq)
