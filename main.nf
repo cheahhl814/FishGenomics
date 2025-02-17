@@ -6,6 +6,8 @@ nextflow.enable.dsl=2
 params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
 params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
+
+// Parameters (Mitogenome assembly)
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
 params.firstGene = "" // FASTA sequences of genes to use as start point
 params.orthoDir = "${launchDir}/orthofinder_input"
