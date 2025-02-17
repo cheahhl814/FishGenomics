@@ -71,6 +71,7 @@ workflow mitoAssembly {
   mtAssembly(segregateReads.out.mitoq.collect(), asmDir)
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
+  mtAnnotate(mtCircular.out.mtFinal)
 }
 
 workflow canuWf {

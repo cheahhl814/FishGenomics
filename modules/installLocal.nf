@@ -36,15 +36,15 @@ process getCirclator {
     """
 }
 
-process getMitos {
-    tag "Install Mitos2"
+process getProkka {
+    tag "Install Prokka"
 
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n mitos -y
-    micromamba activate mitos
-    micromamba install -y -c bioconda circlator
+    micromamba create -n prokka -y
+    micromamba activate prokka
+    micromamba install -y -c bioconda prokka
     """
 }
 
