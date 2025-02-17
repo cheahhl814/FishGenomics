@@ -83,6 +83,7 @@ nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [cus
 ## Workflows
 1. Install dependencies: `installLocal`
 2. Read QC and filtering: `preAssembly`
-3. Mitochondrial genome assembly: `mitoAssembly`
+3. Mitochondrial genome assembly, annotation, and phylogenetic analysis: `mitoAssembly`
 4. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
 5. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
+6. Genome annotation: `annotation`
