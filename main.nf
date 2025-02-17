@@ -211,8 +211,9 @@ workflow reconciliationQuickmerge {
 }
 
 workflow generateReport {
-  preassemblyReports = Channel.fromPath("{params.resultDir}/pre-assembly", type: 'dir')
-  assemblyReports = Channel.fromPath("{params.resultDir}/assembly", type: 'dir')
+  preassemblyReports = Channel.fromPath("${params.resultDir}/pre-assembly", type: 'dir')
+  mitoassemblyReports = Channel.fromPath("${params.resultDir}/mtGenome", type: 'dir')
+  assemblyReports = Channel.fromPath("${params.resultDir}/assembly", type: 'dir')
 
   preassemblyReport(preassemblyReports)
   assemblyReport(assemblyReports)
