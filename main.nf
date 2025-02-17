@@ -7,6 +7,7 @@ params.fastq = "${launchDir}/*.fastq" // Input WGS long read fastq files
 params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
 params.resultDir = './results' // Directory for all results
 params.refmtDNA = "" // Mitochondria reference sequences (FASTA) of closely related species
+params.firstGene = "" // FASTA sequences of genes to use as start point
 
 // Parameters (Assembly)
 params.sample_id = ""
@@ -63,12 +64,13 @@ workflow mitoAssembly {
   mitoDNA = Channel.fromPath("${params.refmtDNA}")
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq")
   asmDir = Channel.fromPath("${params.resultDir}/mtGenome/flye", type: 'dir')
+  firstGene = Channel.fromPath("${params.firstGene}")
 
   identifymtDNA(fastq, mitoDNA)
   segregateReads(identifymtDNA.out.one.collect(), fastq)
   mtAssembly(segregateReads.out.mitoq.collect(), asmDir)
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
-  mtCircular(mtPolish.out.polished_fasta, )
+  mtCircular(mtPolish.out.polished_fasta, firstGene)
 }
 
 workflow canuWf {
