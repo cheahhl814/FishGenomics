@@ -116,3 +116,16 @@ process mtAnnotate {
     prokka --prefix ${sample_id} --compliant --addgenes --kingdom Mitochondria ${mtCircular}
     """
 }
+
+process mtTree {
+    tag "Construct core mitogenome phylogenetic tree"
+    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+
+    input:
+    output:
+
+    script:
+    """
+    orthofinder -t 6 -a 6 -d -M msa -A mafft -f orthofinder_input/
+    """
+}
