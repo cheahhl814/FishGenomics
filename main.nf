@@ -37,6 +37,11 @@ include { ganonClassify; decon } from './modules/decon.nf'
 workflow installLocal {
   getPreassembly()
   getDecon()
+  getCirclator()
+  getProkka()
+  getOrthofinder()
+  getTrimAl()
+  getraxmlng
   getCanu()
   getFlye()
   getRaven()
