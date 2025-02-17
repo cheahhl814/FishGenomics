@@ -24,6 +24,30 @@ process getDecon {
     """
 }
 
+process getCirclator {
+    tag "Install Circlator"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n circlator -y
+    micromamba activate circlator
+    micromamba install -y -c bioconda circlator
+    """
+}
+
+process getMitos {
+    tag "Install Mitos2"
+
+    script:
+    """
+    eval "\$(micromamba shell hook --shell bash)"
+    micromamba create -n mitos -y
+    micromamba activate mitos
+    micromamba install -y -c bioconda circlator
+    """
+}
+
 process getCanu {
     tag "Install Canu"
 

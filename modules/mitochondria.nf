@@ -96,3 +96,14 @@ process mtCircular {
     circlator fixstart ${contig} --genes_fa ${firstGene} ${sample_id}_circular
     """
 }
+
+process mtAnnotate {
+    tag "Annotate the circularized mitogenome"
+    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+
+    input:
+    output:
+    script:
+    """
+    """
+}
