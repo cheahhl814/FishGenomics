@@ -64,6 +64,16 @@ workflow installLocal {
   getFunannotate()
 }
 
+workflow plotOnly {
+  fastqs = Channel.fromPath("${params.fastq}").collect()
+  fastq = Channel.fromPath("${params.fastq}")
+  conFiles = Channel.fromPath("${params.conFiles}")
+
+  nanoplot_raw(fastqs)
+  ganonClassify(fastq, conFiles)
+  decon(ganonClassify.out.one.collect(), fastq)
+}
+
 workflow preAssembly {
   fastqs = Channel.fromPath("${params.fastq}").collect()
   fastq = Channel.fromPath("${params.fastq}")
