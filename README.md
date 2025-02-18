@@ -46,7 +46,7 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 
 ### reconciliationRagTag and reconciliationQuickmerge Workflows
 - `--firstA` <First assembly FASTA>
-params.secondA = <Second assembly FASTA>
+- `--secondA` = <Second assembly FASTA>
 params.thirdA = <Third assembly FASTA>
 params.fourthA = <Fourth assembly FASTA>
 params.fifthA = <Fifth assembly FASTA>
