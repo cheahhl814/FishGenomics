@@ -26,7 +26,6 @@ params.fifthA = ""
 
 // Parameters (Annotation)
 params.finalAsm = "" // Final assembly after reconciliation
-params.annotation_stats = ""
 params.species = ""
 params.buscodb = ""
 
@@ -231,7 +230,6 @@ workflow reconciliationQuickmerge {
 workflow annotation {
   // Input channel for the final genome assembly
   input_assembly = Channel.fromPath("${params.finalAsm}")
-  annotation_stats = Channel.fromPath("${params.annotation_stats}", type: 'dir')
   species = Channel.value("${params.species}")
   buscodb = Channel.value("${params.buscodb}")
 

@@ -30,21 +30,21 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
     ```
 
 ## Workflow-specific Requirements
-### deconOnly and preAssembly Workflow
+### `deconOnly` and `preAssembly` Workflows
 - Input ONT reads (`.fastq`, `fq`, `fasta`, or `fa`) in current directory.
 - Contaminant genomes (`./contaminants/*.fasta`).
 
-### mitoAssembly
+### `mitoAssembly` Workflow
 - Reference (complete) mitochondrial genome (`./referenceMt/*.{fa,fasta,fna}`)
 - DNA sequence of the first gene in mitochondrial genomes (`/referenceMt/firstGene.{fa,fasta,fna}`)
 - Input folder for Orthofinder (mitochondrial genome) (`./orthofinderMt`). This folder should contain nucleotide FASTA files of core genes (13 protein-coding genes + 2 ribosomal RNA genes) from the target species, closely related species (same genus), and at least one outgroup species.
 
-### canuWf, wtdbg2Wf, flyeWf, ravenWf, and shastaWf Workflows
+### `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, and `shastaWf` Workflows
 - Reference genome (`./referenceGenome/*.fasta`, for scaffolding).
 - `--sample_id` "prefix" (Prefix of genome assembly)
 - `--genomeSize` "size" (Expected genome size)
 
-### reconciliationRagTag and reconciliationQuickmerge Workflows
+### `reconciliationRagTag` and `reconciliationQuickmerge` Workflows
 - `--firstA` "First assembly FASTA"
 - `--secondA` = "Second assembly FASTA"
 - `--thirdA` "Third assembly FASTA"
@@ -52,6 +52,9 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 - `--fifthA` "Fifth assembly FASTA"
 
 ### `annotation` Workflow
+- `--finalAsm` "Final assembly after reconciliation"
+- `--species` "Species scientific name"
+- `--buscodb` "BUSCO models"
 
 ## Usage
 
@@ -84,6 +87,11 @@ nextflow run main.nf -entry [canuWf,wtdbg2Wf,flyeWf,ravenWf,shastaWf] --genomeSi
 ### Parameters (Genome reconciliation)
 ```bash
 nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge] --firstA assembly1.fasta --secondA assembly2.fasta --thirdA assembly3.fasta --fourthA assembly4.fasta --fifthA assembly5.fasta
+```
+
+### Parameters (Genome annotation)
+```bash
+nextflow run main.nf -entry annotation --finalAsm assembly.fasta --species 'Betta hipposideros' --buscodb eukarya
 ```
 
 ### Output Directories
