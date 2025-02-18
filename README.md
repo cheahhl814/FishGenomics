@@ -32,6 +32,7 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 - Contaminant genomes (`./contaminants/*.fasta`).
 - Reference (complete) mitochondrial genome (`./referenceMt/*.{fa,fasta,fna}`)
 - DNA sequence of the first gene in mitochondrial genomes (`/referenceMt/firstGene.{fa,fasta,fna}`)
+- Input folder for Orthofinder (mitochondrial genome) (`./orthofinderMt`). This folder should contain nucleotide FASTA files of core genes (13 protein-coding genes + 2 ribosomal RNA genes) from the target species, closely related species (same genus), and at least one outgroup species. 
 - Reference genome (`./referenceGenome/*.fasta`, for scaffolding).
 
 ## Usage
