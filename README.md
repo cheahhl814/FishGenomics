@@ -13,7 +13,7 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 - Genome annotation (Funannotate)
 - MultiQC report generation
 
-## Requirements
+## General Requirements
 - Nextflow (DSL2)
     ```bash
     curl -s https://get.nextflow.io | bash
@@ -28,12 +28,28 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
     ```bash
     nextflow run cheahhl814/FishGenomics -entry installLocal -profile local
     ```
+
+## Workflow-specific Requirements
+### deconOnly and preAssembly Workflow
 - Input ONT reads (`.fastq`, `fq`, `fasta`, or `fa`) in current directory.
 - Contaminant genomes (`./contaminants/*.fasta`).
+
+### mitoAssembly
 - Reference (complete) mitochondrial genome (`./referenceMt/*.{fa,fasta,fna}`)
 - DNA sequence of the first gene in mitochondrial genomes (`/referenceMt/firstGene.{fa,fasta,fna}`)
-- Input folder for Orthofinder (mitochondrial genome) (`./orthofinderMt`). This folder should contain nucleotide FASTA files of core genes (13 protein-coding genes + 2 ribosomal RNA genes) from the target species, closely related species (same genus), and at least one outgroup species. 
+- Input folder for Orthofinder (mitochondrial genome) (`./orthofinderMt`). This folder should contain nucleotide FASTA files of core genes (13 protein-coding genes + 2 ribosomal RNA genes) from the target species, closely related species (same genus), and at least one outgroup species.
+
+### canuWf, wtdbg2Wf, flyeWf, ravenWf, and shastaWf Workflows
 - Reference genome (`./referenceGenome/*.fasta`, for scaffolding).
+- `--sample_id` <prefix> (Prefix of genome assembly)
+- `--genomeSize` <size> (Expected genome size)
+
+### reconciliationRagTag and reconciliationQuickmerge Workflows
+- `--firstA` <First assembly FASTA>
+params.secondA = <Second assembly FASTA>
+params.thirdA = <Third assembly FASTA>
+params.fourthA = <Fourth assembly FASTA>
+params.fifthA = <Fifth assembly FASTA>
 
 ## Usage
 
@@ -85,8 +101,9 @@ nextflow run cheahhl814/FishGenomics -entry [workflow_name] [parameters] -c [cus
 
 ## Workflows
 1. Install dependencies: `installLocal`
-2. Read QC and filtering: `preAssembly`
-3. Mitochondrial genome assembly, annotation, and phylogenetic analysis: `mitoAssembly`
-4. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
-5. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
-6. Genome annotation: `annotation`
+2. Read QC plot and decontamination only: `deconOnly`
+3. Full pre-assembly workflow (Read QC, filtering, and decontamination): `preAssembly`
+4. Mitochondrial genome assembly, annotation, and phylogenetic analysis: `mitoAssembly`
+5. Genome assembly: `canuWf`, `wtdbg2Wf`, `flyeWf`, `ravenWf`, `shastaWf`
+6. Genome reconciliation: `reconciliationRagTag` or `reconciliationQuickmerge`
+7. Genome annotation: `annotation`

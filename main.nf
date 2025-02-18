@@ -109,9 +109,9 @@ workflow canuWf {
   fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq")
           .collect()
           .set()
-  name = Channel.value(params.sample_id)
-  reference_genome = Channel.fromPath(params.reference_genome)
-  genomeSize = Channel.value(params.genomeSize)
+  name = Channel.value("${params.sample_id}")
+  reference_genome = Channel.fromPath("${params.reference_genome}")
+  genomeSize = Channel.value("${params.genomeSize}")
 
   canu(fastq, genomeSize, name)
   racon(canu.out.canu_contig, fastq)
