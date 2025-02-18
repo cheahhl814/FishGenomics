@@ -51,6 +51,8 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 - `--fourthA` "Fourth assembly FASTA"
 - `--fifthA` "Fifth assembly FASTA"
 
+### `annotation` Workflow
+
 ## Usage
 
 Basic usage:
@@ -78,17 +80,11 @@ nextflow run main.nf -entry mitoAssembly [parameters]
 ```bash
 nextflow run main.nf -entry [canuWf,wtdbg2Wf,flyeWf,ravenWf,shastaWf] --genomeSize "estimated_size"
 ```
-- `--genomeSize`: Estimated genome size (required for some assemblers)
 
 ### Parameters (Genome reconciliation)
 ```bash
-nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge]
+nextflow run main.nf -entry [reconciliationRagTag,reconciliationQuickmerge] --firstA assembly1.fasta --secondA assembly2.fasta --thirdA assembly3.fasta --fourthA assembly4.fasta --fifthA assembly5.fasta
 ```
-- `--canuScaffold`: Path to scaffold fasta file from the Canu pipeline
-- `--wtdbg2Scaffold`: Path to scaffold fasta file from the wtdbg2 pipeline
-- `--flyeScaffold`: Path to scaffold fasta file from the Flye pipeline
-- `--ravenScaffold`: Path to scaffold fasta file from the Raven pipeline
-- `--shastaScaffold`: Path to scaffold fasta file from the Shasta pipeline
 
 ### Output Directories
 - `./results/`
