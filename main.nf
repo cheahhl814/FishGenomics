@@ -64,7 +64,7 @@ workflow installLocal {
   getFunannotate()
 }
 
-workflow plotOnly {
+workflow deconOnly {
   fastqs = Channel.fromPath("${params.fastq}").collect()
   fastq = Channel.fromPath("${params.fastq}")
   conFiles = Channel.fromPath("${params.conFiles}")
@@ -83,8 +83,8 @@ workflow preAssembly {
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
-  ganonClassify(fastq, conFiles)
-  decon(ganonClassify.out.one.collect(), fastq)
+  ganonClassify(filtlong.out.filtlong_fastq, conFiles)
+  decon(ganonClassify.out.one.collect(), filtlong.out.filtlong_fastq)
 }
 
 workflow mitoAssembly {

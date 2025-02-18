@@ -25,7 +25,7 @@ process decon {
 
     input:
     val(ones)
-    path{fastq}
+    path(fastq)
 
     output:
     path "*_decontaminated.fastq", emit: deconFastq
