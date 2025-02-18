@@ -28,9 +28,11 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
     ```bash
     nextflow run cheahhl814/FishGenomics -entry installLocal -profile local
     ```
-- Input ONT reads (`.fastq`) in current directory.
-- Contaminant genomes (`.fasta`) in the `contaminants/` folder of current directory (Curated contaminant genomes can be downloaded here: https://figshare.com/s/5c99c88a2bfb5e13f33c).
-- Reference genome (`.fasta`, for scaffolding) in current directory.
+- Input ONT reads (`.fastq`, `fq`, `fasta`, or `fa`) in current directory.
+- Contaminant genomes (`./contaminants/*.fasta`).
+- Reference (complete) mitochondrial genome (`./referenceMt/*.{fa,fasta,fna}`)
+- DNA sequence of the first gene in mitochondrial genomes (`/referenceMt/firstGene.{fa,fasta,fna}`)
+- Reference genome (`./referenceGenome/*.fasta`, for scaffolding).
 
 ## Usage
 
