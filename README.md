@@ -41,15 +41,15 @@ A Nextflow pipeline for whole genome assembly (using Oxford Nanopore Technologie
 
 ### canuWf, wtdbg2Wf, flyeWf, ravenWf, and shastaWf Workflows
 - Reference genome (`./referenceGenome/*.fasta`, for scaffolding).
-- `--sample_id` <prefix> (Prefix of genome assembly)
-- `--genomeSize` <size> (Expected genome size)
+- `--sample_id` "prefix" (Prefix of genome assembly)
+- `--genomeSize` "size" (Expected genome size)
 
 ### reconciliationRagTag and reconciliationQuickmerge Workflows
-- `--firstA` <First assembly FASTA>
-- `--secondA` = <Second assembly FASTA>
-params.thirdA = <Third assembly FASTA>
-params.fourthA = <Fourth assembly FASTA>
-params.fifthA = <Fifth assembly FASTA>
+- `--firstA` "First assembly FASTA"
+- `--secondA` = "Second assembly FASTA"
+- `--thirdA` "Third assembly FASTA"
+- `--fourthA` "Fourth assembly FASTA"
+- `--fifthA` "Fifth assembly FASTA"
 
 ## Usage
 
