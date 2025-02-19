@@ -49,7 +49,7 @@ workflow installLocal {
   getProkka()
   getOrthofinder()
   getTrimAl()
-  getraxmlng
+  getraxmlng()
   getCanu()
   getFlye()
   getRaven()
@@ -64,7 +64,8 @@ workflow installLocal {
 }
 
 workflow deconOnly {
-  fastqs = Channel.fromPath("${params.fastq}").collect()
+  fastq_files = Channel.fromPath("${params.fastq}").collect()
+  fastqs = Channel.value(fastq_files)
   fastq = Channel.fromPath("${params.fastq}")
   conFiles = Channel.fromPath("${params.conFiles}")
 
@@ -74,7 +75,8 @@ workflow deconOnly {
 }
 
 workflow preAssembly {
-  fastqs = Channel.fromPath("${params.fastq}").collect()
+  fastq_files = Channel.fromPath("${params.fastq}").collect()
+  fastqs = Channel.value(fastq_files)
   fastq = Channel.fromPath("${params.fastq}")
   conFiles = Channel.fromPath("${params.conFiles}")
 
@@ -105,79 +107,82 @@ workflow mitoAssembly {
 }
 
 workflow canuWf {
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq")
-          .collect()
-          .set()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
   name = Channel.value("${params.sample_id}")
   reference_genome = Channel.fromPath("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
 
-  canu(fastq, genomeSize, name)
-  racon(canu.out.canu_contig, fastq)
+  canu(fastqs, genomeSize, name)
+  racon(canu.out.canu_contig, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, fastq)
+  scaffold(racon.out.polished_fasta, reference_genome, fastqs)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
 workflow wtdbg2Wf {
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  name = Channel.value(params.sample_id)
-  reference_genome = Channel.fromPath(params.reference_genome)
-  genomeSize = Channel.value(params.genomeSize)
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  name = Channel.value("${params.sample_id}")
+  reference_genome = Channel.fromPath("${params.reference_genome}")
+  genomeSize = Channel.value("${params.genomeSize}")
 
-  wtdbg2(fastq, genomeSize, name)
-  racon(wtdbg2.out.wtdbg2_contig, fastq)
+  wtdbg2(fastqs, genomeSize, name)
+  racon(wtdbg2.out.wtdbg2_contig, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, fastq)
+  scaffold(racon.out.polished_fasta, reference_genome, fastqs)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
 workflow flyeWf {
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  reference_genome = Channel.fromPath(params.reference_genome)
-  genomeSize = Channel.value(params.genomeSize)
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  reference_genome = Channel.fromPath("${params.reference_genome}")
+  genomeSize = Channel.value("${params.genomeSize}")
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
 
   flye(fastq, genomeSize, flyeDir)
-  racon(flye.out.flye_contig, fastq)
+  racon(flye.out.flye_contig, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, fastq)
+  scaffold(racon.out.polished_fasta, reference_genome, fastqs)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
 workflow ravenWf {
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  reference_genome = Channel.fromPath(params.reference_genome)
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  reference_genome = Channel.fromPath("${params.reference_genome}")
 
   raven(fastq)
-  racon(raven.out.raven_contig, fastq)
+  racon(raven.out.raven_contig, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, fastq)
+  scaffold(racon.out.polished_fasta, reference_genome, fastqs)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
 workflow shastaWf {
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  reference_genome = Channel.fromPath(params.reference_genome)
-  name = Channel.value(params.sample_id)
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  reference_genome = Channel.fromPath("${params.reference_genome}")
+  name = Channel.value("${params.sample_id}")
 
-  shasta(fastq, name)
-  racon(shasta.out.shasta_contig, fastq)
+  shasta(fastqs, name)
+  racon(shasta.out.shasta_contig, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, fastq)
+  scaffold(racon.out.polished_fasta, reference_genome, fastqs)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
@@ -185,21 +190,22 @@ workflow shastaWf {
 
 workflow reconciliationRagTag {
   // Input channel for genome assembly FASTA files
-  scaffold1 = Channel.fromPath(params.firstA)
-  scaffold2 = Channel.fromPath(params.secondA)
-  scaffold3 = Channel.fromPath(params.thirdA)
-  scaffold4 = Channel.fromPath(params.fourthA)
-  scaffold5 = Channel.fromPath(params.fifthA)
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  reference_genome = Channel.fromPath(params.reference_genome)
+  scaffold1 = Channel.fromPath("${params.firstA}")
+  scaffold2 = Channel.fromPath("${params.secondA}")
+  scaffold3 = Channel.fromPath("${params.thirdA}")
+  scaffold4 = Channel.fromPath("${params.fourthA}")
+  scaffold5 = Channel.fromPath("${params.fifthA}")
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  reference_genome = Channel.fromPath("${params.reference_genome}")
 
   // Genome reconciliation workflow
   patch1(canuScaffold, wtdbg2Scaffold)
   patch2(patch1.out.patch_fasta, flyeScaffold)
   patch3(patch2.out.patch_fasta, ravenScaffold)
   patch4(patch3.out.patch_fasta, shastaScaffold)
-  scaffold2(patch4.out.patch_fasta, reference_genome, fastq)
-  racon(scaffold.out.scaffold_fasta, fastq)
+  scaffold2(patch4.out.patch_fasta, reference_genome, fastqs)
+  racon(scaffold.out.scaffold_fasta, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   galignment(racon.out.scaffold_fasta, reference_genome)
@@ -207,21 +213,22 @@ workflow reconciliationRagTag {
 
 workflow reconciliationQuickmerge {
   // Input channel for genome assembly FASTA files
-  canuScaffold = Channel.fromPath(params.canuScaffold)
-  wtdbg2Scaffold = Channel.fromPath(params.wtdbg2Scaffold)
-  flyeScaffold = Channel.fromPath(params.flyeScaffold)
-  ravenScaffold = Channel.fromPath(params.ravenScaffold)
-  shastaScaffold = Channel.fromPath(params.shastaScaffold)
-  fastq = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect().set()
-  reference_genome = Channel.fromPath(params.reference_genome)
+  scaffold1 = Channel.fromPath("${params.firstA}")
+  scaffold2 = Channel.fromPath("${params.secondA}")
+  scaffold3 = Channel.fromPath("${params.thirdA}")
+  scaffold4 = Channel.fromPath("${params.fourthA}")
+  scaffold5 = Channel.fromPath("${params.fifthA}")
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastqs = Channel.value(fastq_files)
+  reference_genome = Channel.fromPath("${params.reference_genome}")
 
   // Genome reconciliation workflow
   quickmerge1(canuScaffold, wtdbg2Scaffold)
   quickmerge2(quickmerge1.out.merge_assembly, flyeScaffold)
   quickmerge3(quickmerge2.out.merge_assembly, ravenScaffold)
   quickmerge4(quickmerge3.out.merge_assembly, shastaScaffold)
-  scaffold2(quickmerge4.out.merge_assembly, reference_genome, fastq)
-  racon(scaffold.out.scaffold_fasta, fastq)
+  scaffold2(quickmerge4.out.merge_assembly, reference_genome, fastqs)
+  racon(scaffold.out.scaffold_fasta, fastqs)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   galignment(racon.out.scaffold_fasta, reference_genome)
