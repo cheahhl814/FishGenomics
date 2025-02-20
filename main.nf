@@ -64,8 +64,7 @@ workflow installLocal {
 }
 
 workflow deconOnly {
-  fastq_files = Channel.fromPath("${params.fastq}").collect()
-  fastqs = Channel.value(fastq_files)
+  fastqs = Channel.fromPath("${params.fastq}").collect()
   fastq = Channel.fromPath("${params.fastq}")
   conFiles = Channel.fromPath("${params.conFiles}")
 
