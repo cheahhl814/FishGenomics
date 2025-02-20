@@ -4,7 +4,8 @@ process getMultiqc {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate preassembly
+    micromamba activate pip
     pip install multiqc
+    pip install nanoplot
     """
 }
