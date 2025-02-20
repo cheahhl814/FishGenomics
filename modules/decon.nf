@@ -3,7 +3,7 @@ process decon {
   publishDir "./results/decon", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(contaminants)
+  val(contaminants)
   tuple val(sample_id), path(fastq)
 
   output:
