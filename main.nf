@@ -30,6 +30,7 @@ params.species = ""
 params.buscodb = ""
 
 // Module inclusion
+include { getMultiqc } from './modules/installLocal.nf'
 include { identifymtDNA; segregateReads; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
@@ -42,7 +43,7 @@ include { funClean; funSort; funMask; funPredict; funAnnotate; annotationStats }
 // Workflows
 
 workflow extraTools {
-  
+  getMultiqc()
 }
 
 workflow deconOnly {
