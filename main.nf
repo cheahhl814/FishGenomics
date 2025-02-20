@@ -30,7 +30,6 @@ params.species = ""
 params.buscodb = ""
 
 // Module inclusion
-include { getPreassembly; getDecon; getCirclator; getProkka; getOrthofinder; getTrimAl; getraxmlng; getCanu; getFlye; getRaven; getShasta; getwtdbg2; getRacon; getMummer; getQuast; getBusco; getReconciliation; getFunannotate } from './modules/installLocal.nf'
 include { identifymtDNA; segregateReads; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
@@ -42,57 +41,34 @@ include { funClean; funSort; funMask; funPredict; funAnnotate; annotationStats }
 
 // Workflows
 
-workflow installLocal {
-  getPreassembly()
-  getDecon()
-  getCirclator()
-  getProkka()
-  getOrthofinder()
-  getTrimAl()
-  getraxmlng()
-  getCanu()
-  getFlye()
-  getRaven()
-  getShasta()
-  getwtdbg2()
-  getRacon()
-  getMummer()
-  getQuast()
-  getBusco()
-  getReconciliation()
-  getFunannotate()
-}
-
 workflow deconOnly {
-  fastq = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
-  conFasta = Channel.fromPath("${params.conFasta}")
+  reads = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
+  conFasta = Channel.value("${params.conFasta}")
 
-  nanoplot_raw(fastq.collect())
-  decon(conFasta, fastq)
+  nanoplot_raw(reads.collect())
+  decon(conFasta, reads)
 }
 
 workflow preAssembly {
-  fastq_files = Channel.fromPath("${params.fastq}").collect()
-  fastqs = Channel.value(fastq_files)
-  fastq = Channel.fromPath("${params.fastq}")
-  conFasta = Channel.fromPath("${params.conFasta}")
+  reads = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
+  conFasta = Channel.value("${params.conFasta}")
 
-  nanoplot_raw(fastqs)
-  porechop(fastq)
+  nanoplot_raw(reads.collect())
+  porechop(reads)
   filtlong(porechop.out.porechop_fastq)
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
   decon(conFasta, filtlong.out.filtlong_fastq)
 }
 
 workflow mitoAssembly {
-  mitoDNA = Channel.fromPath("${params.refmtDNA}")
-  fastq = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq")
-  firstGene = Channel.fromPath("${params.firstGene}")
+  mitoDNA = Channel.value("${params.refmtDNA}")
+  reads = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq").map { file -> tuple(file.simpleName, file) }
+  firstGene = Channel.value("${params.firstGene}")
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
-  identifymtDNA(fastq, mitoDNA)
-  segregateReads(identifymtDNA.out.one.collect(), fastq)
-  mtAssembly(segregateReads.out.mitoq.collect(), asmDir)
+  identifymtDNA(reads, mitoDNA)
+  segregateReads(identifymtDNA.out.one.collect(), reads)
+  mtAssembly(segregateReads.out.mitoq.collect())
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal)
