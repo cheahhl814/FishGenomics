@@ -7,15 +7,13 @@ process identifymtDNA {
     path(mitoDNA)
 
     output:
-    path "*.tre", emit: tre
-    path "*.rep", emit: rep
-    path "*.one", emit: one
+    path "*.sam", emit: sam
 
     script:
     def database_id = mitoDNA.baseName
+    def sample_id = fastq.baseName
     """
-    ganon build-custom --input-target sequence --level sequence --taxonomy skip --input ${mitoDNA} --db-prefix ${database_id} --threads ${task.cpus}
-    ganon classify --db-prefix ${database_id} --single-reads ${fastq} --output-one --output-prefix mitoDNA --threads ${task.cpus}
+    minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} > ${sample_id}_mt.sam
     """
 }
 
@@ -24,19 +22,18 @@ process segregateReads {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    val(ones)
+    path(sam)
     path{fastq}
 
     output:
     path "*_nuclear.fastq", emit: nuclearq
-    path "*_nuclear.fastq", emit: mitoq
+    path "*_mt.fastq", emit: mitoq
 
     script:
-    def one = ones.join{" "}
-    def sample_id = fastq.baseName
+    def sample_id = sam.baseName
     """
-    cat ${one} | cut -f 1 | sort | uniq | seqkit grep -v -f - ${fastq} > ${sample_id}_nuclear.fastq
-    cat ${one} | cut -f 1 | sort | uniq | seqkit grep -f - ${fastq} > ${sample_id}_mt.fastq
+    samtools view -b -f 4 ${sam} | samtools fastq - > ${sample_id}_nuclear.fastq
+    samtools view -b -F 4 ${sam} | samtools fastq - > ${sample_id}_mt.fastq
     """
 }
 
