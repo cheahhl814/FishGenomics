@@ -1,4 +1,4 @@
-process removeContaminant {
+process decon {
   tag "Filter out contaminant reads (microbial and human DNA)"
   publishDir "./results/decon", mode: 'copy', overwrite: false, pattern: '**'
 
