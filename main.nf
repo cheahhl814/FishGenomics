@@ -64,7 +64,7 @@ workflow installLocal {
 }
 
 workflow deconOnly {
-  fastq = Channel.fromPath("${params.fastq}").view().map { file -> tuple(file.simpleName, file) }
+  fastq = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
   conFasta = Channel.fromPath("${params.conFasta}")
 
   nanoplot_raw(fastq.collect())
