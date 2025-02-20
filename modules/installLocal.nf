@@ -42,9 +42,7 @@ process getProkka {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n prokka -y
-    micromamba activate prokka
-    micromamba install -y -c bioconda prokka
+    micromamba create -n prokka -y -c bioconda prokka
     """
 }
 
