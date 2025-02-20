@@ -10,9 +10,9 @@ process nanoplot {
   path "*.html", emit: html
 
   script:
-  def fastq = fastqs.join(" ")
+  def fastqs = fastq.join(" ")
   """
-  NanoPlot --threads ${task.cpus} --fastq ${fastq} --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
+  NanoPlot --threads ${task.cpus} --fastq ${fastqs} --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
   """
 }
 
