@@ -88,7 +88,6 @@ workflow preAssembly {
 workflow mitoAssembly {
   mitoDNA = Channel.fromPath("${params.refmtDNA}")
   fastq = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq")
-  asmDir = Channel.fromPath("${params.resultDir}/mtGenome/flye", type: 'dir')
   firstGene = Channel.fromPath("${params.firstGene}")
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
