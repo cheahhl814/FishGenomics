@@ -84,4 +84,3 @@ dependencies:
   - yaml-cpp=0.8.0=h59595ed_0
   - zlib=1.2.13=h4ab18f5_6
 
-prefix: "/home/vivarshini/micromamba/envs/decon"

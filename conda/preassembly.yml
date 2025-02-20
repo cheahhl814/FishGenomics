@@ -140,4 +140,3 @@ dependencies:
     - NanoPlot==1.44.1
     - multiqc==1.27.1
 
-prefix: "/home/vivarshini/micromamba/envs/preassembly"
