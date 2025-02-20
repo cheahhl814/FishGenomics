@@ -4,13 +4,12 @@ process decon {
 
   input:
   path(contaminants)
-  path(fastq)
+  tuple val(sample_id), path(fastq)
 
   output:
   path "*_decontaminated.fastq", emit: deconFASTQ
 
   script:
-  def sample_id = fastq.baseName
   """
   minimap2 -t ${task.cpus} -ax map-ont ${contaminants} ${fastq} | samtools view -b -f 4 - | samtools fastq - > ${sample_id}_decontaminated.fastq
   """
