@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
-params.fastq = "${launchDir}/*.{fastq,fq,fasta,fa}" // Input WGS long read fastq files
+params.fastq = "${launchDir}/*.{fastq,fq,fasta,fa}.gz" // Input WGS long read fastq files
 params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
 params.resultDir = "./results" // Directory for all results
 
