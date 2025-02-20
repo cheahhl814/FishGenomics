@@ -67,7 +67,7 @@ workflow deconOnly {
   fastq = Channel.fromPath("${params.fastq}").view().flatMap()
   conFasta = Channel.fromPath("${params.conFasta}")
 
-  nanoplot_raw(fastqs.collect())
+  nanoplot_raw(fastq.collect())
   decon(conFasta, fastq)
 }
 
