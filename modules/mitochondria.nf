@@ -102,15 +102,12 @@ process mtAnnotate {
     path(mtFinal)
 
     output:
-    path "*.gff", emit: mtGFF
-    path "*.gbk", emit: mtGenBank
-    path "*.faa", emit: mtProtein
-    path "*.ffn", emit: mtProteinN
+    path "*.gff"
 
     script:
     def sample_id = mtCircular.baseName
     """
-    prokka --prefix ${sample_id} --compliant --addgenes --kingdom Mitochondria ${mtCircular}
+    
     """
 }
 
