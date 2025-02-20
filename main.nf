@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
 params.fastq = "${launchDir}/*.{fastq,fq,fasta,fa}.gz" // Input WGS long read fastq files
-params.conFiles = "${launchDir}/contaminants.tsv" // Contaminant reference database
+params.conFasta = "${launchDir}/contaminants.fasta" // Contaminant reference database
 params.resultDir = "./results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
@@ -66,25 +66,23 @@ workflow installLocal {
 workflow deconOnly {
   fastqs = Channel.fromPath(params.fastq).collect()
   fastq = Channel.fromPath(params.fastq)
-  conFiles = Channel.fromPath(params.conFiles)
+  conFasta = Channel.fromPath(params.conFasta)
 
   nanoplot_raw(fastqs)
-  ganonClassify(fastq, conFiles)
-  decon(ganonClassify.out.one.collect(), fastq)
+  decon(conFasta, fastq)
 }
 
 workflow preAssembly {
   fastq_files = Channel.fromPath("${params.fastq}").collect()
   fastqs = Channel.value(fastq_files)
   fastq = Channel.fromPath("${params.fastq}")
-  conFiles = Channel.fromPath("${params.conFiles}")
+  conFasta = Channel.fromPath("${params.conFasta}")
 
   nanoplot_raw(fastqs)
   porechop(fastq)
   filtlong(porechop.out.porechop_fastq)
   nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
-  ganonClassify(filtlong.out.filtlong_fastq, conFiles)
-  decon(ganonClassify.out.one.collect(), filtlong.out.filtlong_fastq)
+  decon(conFasta, filtlong.out.filtlong_fastq)
 }
 
 workflow mitoAssembly {
