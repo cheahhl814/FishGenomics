@@ -72,7 +72,7 @@ workflow mitoAssembly {
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
   identifymtDNA(reads, mitoDNA)
-  segregateReads(identifymtDNA.out.one.collect(), reads)
+  segregateReads(identifymtDNA.out.one.collect())
   mtAssembly(segregateReads.out.mitoq.collect())
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)

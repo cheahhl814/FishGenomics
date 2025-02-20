@@ -3,15 +3,13 @@ process identifymtDNA {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(fastq)
-    path(mitoDNA)
+    tuple val(sample_id), path(fastq)
+    val(mitoDNA)
 
     output:
     path "*.sam", emit: sam
 
     script:
-    def database_id = mitoDNA.baseName
-    def sample_id = fastq.baseName
     """
     minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} > ${sample_id}_mt.sam
     """
@@ -22,15 +20,13 @@ process segregateReads {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(sam)
-    path{fastq}
+    tuple val(sample_id), path(sam)
 
     output:
-    path "*_nuclear.fastq", emit: nuclearq
-    path "*_mt.fastq", emit: mitoq
+    tuple val(sample_id), path "${sample_id}_nuclear.fastq", emit: nuclearq
+    tuple val(sample_id), path "${sample_id}_mt.fastq", emit: mitoq
 
     script:
-    def sample_id = sam.baseName
     """
     samtools view -b -f 4 ${sam} | samtools fastq - > ${sample_id}_nuclear.fastq
     samtools view -b -F 4 ${sam} | samtools fastq - > ${sample_id}_mt.fastq
@@ -45,19 +41,19 @@ process mtAssembly {
   val(fastqs)
 
   output:
-  path "mtGenome"
-  path "mtGenome/assembly.fasta", emit: mtContig
+  path "./results/mtGenome"
+  path "./results/mtGenome/assembly.fasta", emit: mtContig
 
   script:
   def fastq = fastqs.join(" ")
   """
-  flye -t ${task.cpus} --genome-size 16k --out-dir ${flyeDir} --nano-raw ${fastq}
+  flye -t ${task.cpus} --genome-size 16k --out-dir ./results/mtGenome --nano-raw ${fastq}
   """
 }
 
 process mtPolish {
   tag "Polish mitogenome with Racon"
-  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+  publishDir "./results/mtGenome/polish", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
   path(contig)
@@ -78,11 +74,11 @@ process mtPolish {
 
 process mtCircular {
     tag "Circularize mitogenome with Circlator"
-    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/mtGenome/circular", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(contig)
-    path(firstGene)
+    val(contig)
+    val(firstGene)
 
     output:
     path "*_circular.fasta", emit: mtFinal
@@ -96,7 +92,7 @@ process mtCircular {
 
 process mtAnnotate {
     tag "Annotate the circularized mitogenome"
-    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/mtGenome/annotate", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     path(mtFinal)
@@ -113,7 +109,7 @@ process mtAnnotate {
 
 process mtOrtho {
     tag "Construct core mitogenome phylogenetic tree"
-    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/mtGenome/phylogenetics", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     path(mtProteinN)
