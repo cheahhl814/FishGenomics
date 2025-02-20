@@ -180,7 +180,7 @@ process getReconciliation {
     script:
     """
     eval "\$(micromamba shell hook --shell bash)"
-    micromamba create -n reconciliation -y -c bioconda quickmerge ragtag
+    micromamba create -n quickmerge -y -c bioconda quickmerge ragtag
     """
 }
 
