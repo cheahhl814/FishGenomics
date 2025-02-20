@@ -41,6 +41,10 @@ include { funClean; funSort; funMask; funPredict; funAnnotate; annotationStats }
 
 // Workflows
 
+workflow extraTools {
+  
+}
+
 workflow deconOnly {
   reads = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
   conFasta = Channel.value("${params.conFasta}")
