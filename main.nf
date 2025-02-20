@@ -30,7 +30,7 @@ params.species = ""
 params.buscodb = ""
 
 // Module inclusion
-include { getPreassembly; getCanu; getFlye; getRaven; getShasta; getwtdbg2; getRacon; getMummer; getQuast; getBusco; getReconciliation } from './modules/installLocal.nf'
+include { getPreassembly; getDecon; getCirclator; getProkka; getOrthofinder; getTrimAl; getraxmlng getCanu; getFlye; getRaven; getShasta; getwtdbg2; getRacon; getMummer; getQuast; getBusco; getReconciliation; getFunannotate } from './modules/installLocal.nf'
 include { identifymtDNA; segregateReads; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
