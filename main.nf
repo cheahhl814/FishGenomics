@@ -64,9 +64,9 @@ workflow installLocal {
 }
 
 workflow deconOnly {
-  fastqs = Channel.fromPath("${params.fastq}").collect()
-  fastq = Channel.fromPath("${params.fastq}")
-  conFiles = Channel.fromPath("${params.conFiles}")
+  fastqs = Channel.fromPath(params.fastq).collect()
+  fastq = Channel.fromPath(params.fastq)
+  conFiles = Channel.fromPath(params.conFiles)
 
   nanoplot_raw(fastqs)
   ganonClassify(fastq, conFiles)
