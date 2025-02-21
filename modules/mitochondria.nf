@@ -15,7 +15,7 @@ process identifymtDNA {
     """
 }
 
-process segregateReads {
+process segregate {
     tag "Filter out mtDNA reads"
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
