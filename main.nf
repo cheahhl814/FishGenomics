@@ -65,18 +65,18 @@ workflow preAssembly {
 }
 
 workflow mitoAssembly {
-  mitoDNA = Channel.value("${params.refmtDNA}/*_mt.{fa,fasta,fna}")
-  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq")
-  firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}")
-  refseq = Channel.value("refseq63f") 
-  refseqDir = Channel.value("${params.refmtDNA}", type: 'dir')
-  orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta")
-  orthoGFF = Channel.fromPath("${params.orthoMt}/*.gff3")
+  mitoDNA = Channel.value("${params.refmtDNA}/*_mt.{fa,fasta,fna}") // Mitochondrial DNAs of related species
+  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq") // Decontaminated reads
+  firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
+  refseq = Channel.value("refseq63f") // Reference folder name for MITOS2
+  refseqDir = Channel.value("${params.refmtDNA}", type: 'dir') // Parent directory for refseq63f
+  orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta") // FASTA files of mitochondrial DNAs of related species
+  orthoGFF = Channel.fromPath("${params.orthoMt}/*.gff3") // GFF files of mitochondrial genes of related species
   match = orthoFasta.map { file -> tuple(file.baseName, file) }
     .combine(orthoGFF.map { file -> tuple(file.baseName, file) })
     .filter { it[0] == it[2] }
     .map { it -> tuple(it[0], it[1], it[3]) }
-  orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir')
+  orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir') // Input folder for OrthoFinder
 
   identifymtDNA(reads, mitoDNA)
   segregate(identifymtDNA.out.sam)
