@@ -4,6 +4,5 @@ process pipTools {
     script:
     """
     pip install multiqc
-    pip install nanoplot
     """
 }
