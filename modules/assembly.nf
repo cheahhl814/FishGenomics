@@ -44,15 +44,15 @@ process flye {
   input:
   val(fastqs)
   val(genomeSize)
-  path(flyeDir)
 
   output:
-  path "*.fasta", emit: flye_contig
+  path "./results/assembly/flye"
+  path "./results/assembly/assembly.fasta", emit: flye_contig
 
   script:
   def fastq = fastqs.join(" ")
   """
-  flye -t ${task.cpus} --genome-size ${genomeSize} --out-dir $flyeDir --nano-raw ${fastq}
+  flye -t ${task.cpus} --genome-size ${genomeSize} --out-dir ./results/assembly/flye --nano-raw ${fastq}
   """
 }
 
