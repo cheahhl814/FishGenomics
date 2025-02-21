@@ -7,7 +7,7 @@ process decon {
   tuple val(sample_id), path(fastq)
 
   output:
-  tuple val(sample_id), path('${sample_id}_decontaminated.fastq'), emit: deconFASTQ
+  path "${sample_id}_decontaminated.fastq", emit: deconFASTQ
 
   script:
   """
