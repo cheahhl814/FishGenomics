@@ -31,7 +31,7 @@ params.buscodb = ""
 
 // Module inclusion
 include { pipTools } from './modules/installLocal.nf'
-include { identifymtDNA; segregateReads; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
+include { identifymtDNA; segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
@@ -72,7 +72,7 @@ workflow mitoAssembly {
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
   identifymtDNA(reads, mitoDNA)
-  segregateReads(identifymtDNA.out.one.collect())
+  segregate(identifymtDNA.out.one.collect())
   mtAssembly(segregateReads.out.mitoq.collect())
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
