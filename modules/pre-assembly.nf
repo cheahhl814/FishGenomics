@@ -3,7 +3,7 @@ process nanoplot {
   publishDir "./results/pre-assembly/nanoplot", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  tuple val(sample_id), path(fastq)
+  value(fastq)
 
   output:
   path "*.png", emit: png
