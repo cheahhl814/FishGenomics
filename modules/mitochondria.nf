@@ -114,41 +114,40 @@ process mtAnnotate {
 
 process orthoSetup {
     tag "Create gene FASTA files for Orthofinder"
-    publishDir "./orthofinderMt", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/mtGenome/phylogenetics/input", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(fasta)
-    val(gff)
+    tuple val(sample_id), path(fasta), path(gff)
 
     output:
-    path "*_mtGenes_filtered.fasta"
+    path "*_mtGenes_filtered.fasta", emit: geneFasta
 
     script:
     """
     bedtools -s -name -fi ${fasta} -bed ${gff} -fo ${sample_id}_mtGenes.fasta
-    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ./orthofinderMt/${sample_id}_mtGenes_filtered.fasta
+    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ${sample_id}_mtGenes_filtered.fasta
     """
 }
 
 process mtOrtho {
     tag "Construct core mitogenome phylogenetic tree"
-    publishDir "./results/mtGenome/phylogenetics", mode: 'copy', overwrite: false, pattern: '**'
+    publishDir "./results/mtGenome/phylogenetics/input", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
     path(mtGenes)
     path(mtFinal)
-    path(orthoMt)
 
     output:
-    path "*_mtGenes_filtered.fasta"
+    path "*_mtGenes_filtered.fasta", emit: geneFasta
     path "SpeciesTreeAlignment.fa", emit: msa
 
     script:
     def sample_id = mtFinal.baseName
     """
     bedtools -s -name -fi ${mtFinal} -bed ${mtGenes} -fo ${sample_id}_mtGenes.fasta
-    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ${orthoMt}/${sample_id}_mtGenes_filtered.fasta
-    orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${orthoMt}
+    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ${sample_id}_mtGenes_filtered.fasta
+    mv ${sample_id}_mtGenes_filtered.fasta ./results/mtGenome/phylogenetics/input
+    orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ./results/mtGenome/phylogenetics/input
     """
 }
 

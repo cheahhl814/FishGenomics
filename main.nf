@@ -30,7 +30,7 @@ params.buscodb = ""
 
 // Module inclusion
 include { pipTools } from './modules/installLocal.nf'
-include { identifymtDNA; segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
+include { identifymtDNA; segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
@@ -70,7 +70,12 @@ workflow mitoAssembly {
   firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}")
   refseq = Channel.value("refseq63f") 
   refseqDir = Channel.value("${params.refmtDNA}", type: 'dir')
-  orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
+  orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta")
+  orthoGFF = Channel.fromPath("${params.orthoMt}/*.gff3")
+  match = orthoFasta.map { file -> tuple(file.baseName, file) }
+    .combine(orthoGFF.map { file -> tuple(file.baseName, file) })
+    .filter { it[0] == it[2] }
+    .map { it -> tuple(it[0], it[1], it[3]) }
 
   identifymtDNA(reads, mitoDNA)
   segregate(identifymtDNA.out.sam)
@@ -78,7 +83,8 @@ workflow mitoAssembly {
   mtPolish(mtAssembly.out.mtContig, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
-  mtOrtho(mtAnnotate.out.mtGenes, mtCircular.out.mtFinal, orthoMt)
+  orthoSetup(match)
+  mtOrtho(mtAnnotate.out.mtGenes, mtCircular.out.mtFinal)
   trimMSA(mtOrtho.out.msa)
   mtTree(trimMSA.out.trimal_fasta)
 }
