@@ -23,8 +23,8 @@ process segregate {
     tuple val(sample_id), path(sam)
 
     output:
-    tuple val(sample_id), path(${sample_id}_nuclear.fastq), emit: nuclearq
-    tuple val(sample_id), path(${sample_id}_mt.fastq), emit: mitoq
+    tuple val(sample_id), path('${sample_id}_nuclear.fastq'), emit: nuclearq
+    tuple val(sample_id), path('${sample_id}_mt.fastq'), emit: mitoq
 
     script:
     """
