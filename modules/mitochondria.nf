@@ -3,13 +3,14 @@ process identifymtDNA {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    tuple val(sample_id), path(fastq)
+    path(fastq)
     val(mitoDNA)
 
     output:
     path "*.sam", emit: sam
 
     script:
+    def sample_id = fastq.baseName
     """
     minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} > ${sample_id}_mt.sam
     """
@@ -20,11 +21,11 @@ process segregate {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    tuple val(sample_id), path(sam)
+    path(sam)
 
     output:
-    tuple val(sample_id), path('${sample_id}_nuclear.fastq'), emit: nuclearq
-    tuple val(sample_id), path('${sample_id}_mt.fastq'), emit: mitoq
+    path "*_nuclear.fastq", emit: nuclearq
+    path "*_mt.fastq", emit: mitoq
 
     script:
     """
@@ -35,10 +36,10 @@ process segregate {
 
 process mtAssembly {
   tag "Assemble mitogenome with Flye"
-  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+  publishDir "./results/mtGenome/assembly", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  val(fastqs)
+  path(fastqs)
 
   output:
   path "./results/mtGenome"
@@ -47,7 +48,7 @@ process mtAssembly {
   script:
   def fastq = fastqs.join(" ")
   """
-  flye -t ${task.cpus} --genome-size 16k --out-dir ./results/mtGenome --nano-raw ${fastq}
+  flye -t ${task.cpus} --genome-size 16k --out-dir ./results/mtGenome/assembly --nano-raw ${fastq}
   """
 }
 
@@ -56,8 +57,8 @@ process mtPolish {
   publishDir "./results/mtGenome/polish", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
-  path(contig)
-  val(mitoq)
+  val(contig)
+  path(mitoq)
 
   output:
   path "*.paf", emit: minimap_output
@@ -77,7 +78,7 @@ process mtCircular {
     publishDir "./results/mtGenome/circular", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    val(contig)
+    path(contig)
     val(firstGene)
 
     output:

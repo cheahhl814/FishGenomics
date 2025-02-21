@@ -8,9 +8,7 @@ params.conFasta = "${launchDir}/contaminants.fasta" // Contaminant reference dat
 params.resultDir = "./results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
-params.refmtDNA = "${launchDir}/referenceMt/*.{fa,fasta,fna}" // Mitochondria reference sequences (FASTA) of closely related species
-params.firstGene = "${launchDir}/referenceMt/firstGene.{fa,fasta,fna}" // FASTA sequences of genes to use as start point
-
+params.refmtDNA = "${launchDir}/referenceMt" // Mitochondria reference sequences (FASTA), annotation, and MITOS reference data of closely related species
 params.orthoMt = "${launchDir}/orthofinderMt" // Input folder for Orthofinder
 
 // Parameters (Assembly)
@@ -67,17 +65,18 @@ workflow preAssembly {
 }
 
 workflow mitoAssembly {
-  mitoDNA = Channel.value("${params.refmtDNA}")
+  params.refmtDNA
+  mitoDNA = Channel.value("${params.refmtDNA}/*_mt.{fa,fasta,fna}")
   reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq")
-  firstGene = Channel.value("${params.firstGene}")
-  refseq = 
-  refseqDir = 
+  firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}")
+  refseq = Channel.value("refseq63f") 
+  refseqDir = Channel.value("${params.refmtDNA}", type: 'dir')
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
   identifymtDNA(reads, mitoDNA)
-  segregate(identifymtDNA.out.one.collect())
-  mtAssembly(segregateReads.out.mitoq.collect())
-  mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
+  segregate(identifymtDNA.out.sam)
+  mtAssembly(segregate.out.mitoq.collect())
+  mtPolish(mtAssembly.out.mtContig, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
   mtOrtho(mtAnnotate.out.mtProteinN, orthoMt)
