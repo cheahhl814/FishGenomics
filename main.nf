@@ -67,7 +67,7 @@ workflow preAssembly {
 
 workflow mitoAssembly {
   mitoDNA = Channel.value("${params.refmtDNA}")
-  reads = Channel.fromPath("${params.resultDir}/pre-assembly/decon/*_decontaminated.fastq").map { file -> tuple(file.simpleName, file) }
+  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq")
   firstGene = Channel.value("${params.firstGene}")
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
