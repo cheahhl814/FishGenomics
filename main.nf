@@ -45,23 +45,12 @@ workflow extraTools {
   pipTools()
 }
 
-workflow deconOnly {
+workflow plotNdecon {
   reads = Channel.fromPath("${params.fastq}")
   conFasta = Channel.value("${params.conFasta}")
 
   nanoplot(reads.collect())
   decon(conFasta, reads)
-}
-
-workflow preAssembly {
-  reads = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
-  conFasta = Channel.value("${params.conFasta}")
-
-  nanoplot_raw(reads.collect())
-  porechop(reads)
-  filtlong(porechop.out.porechop_fastq)
-  nanoplot_trimmed(filtlong.out.filtlong_fastq.collect())
-  decon(conFasta, filtlong.out.filtlong_fastq)
 }
 
 workflow mitoAssembly {
