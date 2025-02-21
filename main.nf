@@ -12,16 +12,16 @@ params.refmtDNA = "${launchDir}/referenceMt" // Mitochondria reference sequences
 params.orthoMt = "${launchDir}/orthofinderMt" // Input folder for Orthofinder
 
 // Parameters (Assembly)
-params.sample_id = ""
-params.genomeSize = ""
+params.sample_id = "" // Some tools require prefix
+params.genomeSize = "" // Most assembly tools require genome size of the target species
 params.reference_genome = "${launchDir}/referenceGenome/*.{fa,fasta,fna}" // Reference genome of a closely related species
 
 // Parameters (Reconciliation)
-params.firstA = ""
-params.secondA = ""
-params.thirdA = ""
-params.fourthA = ""
-params.fifthA = ""
+params.firstA = "" // The best assembly on all parameters
+params.secondA = "" // Second best
+params.thirdA = "" // Third
+params.fourthA = "" // Fourth
+params.fifthA = "" // Last
 
 // Parameters (Annotation)
 params.finalAsm = "" // Final assembly after reconciliation
