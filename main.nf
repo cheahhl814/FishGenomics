@@ -79,7 +79,7 @@ workflow mitoAssembly {
   mtPolish(mtAssembly.out.mtContig, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
-  mtOrtho(mtAnnotate.out.mtProteinN, orthoMt)
+  mtOrtho(mtAnnotate.out.mtGenes, mtCircular.out.mtFinal, orthoMt)
   trimMSA(mtOrtho.out.msa)
   mtTree(trimMSA.out.trimal_fasta)
 }

@@ -102,8 +102,8 @@ process mtAnnotate {
 
     output:
     path "./results/mtGenome/annotate"
-    path "result.{gff,bed,faa}"
-    path "result.fas", emit: mtGenes
+    path "result.{fas,bed,faa}"
+    path "result.gff", emit: mtGenes
 
     script:
     def sample_id = mtCircular.baseName
@@ -117,16 +117,20 @@ process mtOrtho {
     publishDir "./results/mtGenome/phylogenetics", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(mtProteinN)
-    path(treeDir)
+    path(mtGenes)
+    path(mtFinal)
+    path(orthoMt)
 
     output:
+    path "*_mtGenes_filtered.fasta"
     path "SpeciesTreeAlignment.fa", emit: msa
 
     script:
+    def sample_id = mtFinal.baseName
     """
-    cp ${mtProteinN} ${treeDir}
-    orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${treeDir}
+    bedtools -s -name -fi ${mtFinal} -bed ${mtGenes} -fo ${sample_id}_mtGenes.fasta
+    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ${orthoMt}/${sample_id}_mtGenes_filtered.fasta
+    orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${orthoMt}
     """
 }
 
