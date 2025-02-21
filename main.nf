@@ -47,7 +47,7 @@ workflow extraTools {
 }
 
 workflow deconOnly {
-  reads = Channel.fromPath("${params.fastq}").map { file -> tuple(file.simpleName, file) }
+  reads = Channel.fromPath("${params.fastq}")
   conFasta = Channel.value("${params.conFasta}")
 
   nanoplot(reads.collect())
