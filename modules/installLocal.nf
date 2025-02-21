@@ -3,8 +3,6 @@ process pipTools {
 
     script:
     """
-    eval "\$(micromamba shell hook --shell bash)"
-    micromamba activate pip
     pip install multiqc
     pip install nanoplot
     """
