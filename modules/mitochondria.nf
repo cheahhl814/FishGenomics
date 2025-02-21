@@ -154,17 +154,21 @@ process orthoFinder {
 
   input:
   path(inputDir)
-  val()
+  val(dummy1)
+  val(dummy2)
 
   output:
   path "SpeciesTreeAlignment.fa", emit: msa
 
+  script:
+  """
   orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ./results/mtGenome/phylogenetics/input
+  """
 }
 
 process trimMSA {
   tag "Removing gaps in alignment"
-  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+  publishDir "./results/mtGenome/phylogenetics/tree", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
   path(msa)
@@ -182,7 +186,7 @@ process trimMSA {
 
 process mtTree {
   tag "Building phylogenetic tree"
-  publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
+  publishDir "./results/mtGenome/phylogenetics/tree", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
   path(trimal_fasta)
