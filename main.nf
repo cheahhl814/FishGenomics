@@ -10,6 +10,7 @@ params.resultDir = "./results" // Directory for all results
 // Parameters (Mitogenome assembly)
 params.refmtDNA = "${launchDir}/referenceMt/*.{fa,fasta,fna}" // Mitochondria reference sequences (FASTA) of closely related species
 params.firstGene = "${launchDir}/referenceMt/firstGene.{fa,fasta,fna}" // FASTA sequences of genes to use as start point
+
 params.orthoMt = "${launchDir}/orthofinderMt" // Input folder for Orthofinder
 
 // Parameters (Assembly)
@@ -69,6 +70,8 @@ workflow mitoAssembly {
   mitoDNA = Channel.value("${params.refmtDNA}")
   reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq")
   firstGene = Channel.value("${params.firstGene}")
+  refseq = 
+  refseqDir = 
   orthoMt = Channel.fromPath("${params.orthoMt}", type: 'dir')
 
   identifymtDNA(reads, mitoDNA)
@@ -76,7 +79,7 @@ workflow mitoAssembly {
   mtAssembly(segregateReads.out.mitoq.collect())
   mtPolish(mtAssembly.out.mtContig, segregateReads.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
-  mtAnnotate(mtCircular.out.mtFinal)
+  mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
   mtOrtho(mtAnnotate.out.mtProteinN, orthoMt)
   trimMSA(mtOrtho.out.msa)
   mtTree(trimMSA.out.trimal_fasta)
