@@ -30,7 +30,7 @@ params.buscodb = ""
 
 // Module inclusion
 include { pipTools } from './modules/installLocal.nf'
-include { identifymtDNA; segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; trimMSA; mtTree } from './modules/mitochondria.nf'
+include { identifymtDNA; segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; orthoFinder; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { buildIndex; mapReads; filterReads; nanoplot; nanoplot as nanoplot_raw; porechop; filtlong; nanoplot as nanoplot_trimmed } from './modules/pre-assembly.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
 include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3; patch as patch4; quickmerge as quickmerge1; quickmerge as quickmerge2; quickmerge as quickmerge3; quickmerge as quickmerge4 } from './modules/scaffolding.nf'
@@ -76,6 +76,7 @@ workflow mitoAssembly {
     .combine(orthoGFF.map { file -> tuple(file.baseName, file) })
     .filter { it[0] == it[2] }
     .map { it -> tuple(it[0], it[1], it[3]) }
+  orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir')
 
   identifymtDNA(reads, mitoDNA)
   segregate(identifymtDNA.out.sam)
@@ -85,7 +86,8 @@ workflow mitoAssembly {
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
   orthoSetup(match)
   mtOrtho(mtAnnotate.out.mtGenes, mtCircular.out.mtFinal)
-  trimMSA(mtOrtho.out.msa)
+  orthoFinder(orthofinderInput, orthoSetup.out.geneFasta, mtOrtho.out.geneFasta)
+  trimMSA(orthoFinder.out.msa)
   mtTree(trimMSA.out.trimal_fasta)
 }
 
