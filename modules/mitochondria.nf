@@ -112,6 +112,24 @@ process mtAnnotate {
     """
 }
 
+process orthoSetup {
+    tag "Create gene FASTA files for Orthofinder"
+    publishDir "./orthofinderMt", mode: 'copy', overwrite: false, pattern: '**'
+
+    input:
+    path(fasta)
+    val(gff)
+
+    output:
+    path "*_mtGenes_filtered.fasta"
+
+    script:
+    """
+    bedtools -s -name -fi ${fasta} -bed ${gff} -fo ${sample_id}_mtGenes.fasta
+    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ./orthofinderMt/${sample_id}_mtGenes_filtered.fasta
+    """
+}
+
 process mtOrtho {
     tag "Construct core mitogenome phylogenetic tree"
     publishDir "./results/mtGenome/phylogenetics", mode: 'copy', overwrite: false, pattern: '**'

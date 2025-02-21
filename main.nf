@@ -65,7 +65,6 @@ workflow preAssembly {
 }
 
 workflow mitoAssembly {
-  params.refmtDNA
   mitoDNA = Channel.value("${params.refmtDNA}/*_mt.{fa,fasta,fna}")
   reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq")
   firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}")
