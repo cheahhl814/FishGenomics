@@ -7,14 +7,14 @@ process decon {
   path(fastq)
 
   output:
-  path "*_decontaminated.fastq", emit: deconFASTQ
+  path "*_decontaminated.fastq.gz", emit: deconFASTQ
 
   script:
   def sample_id = fastq.baseName
   """
   minimap2 -t ${task.cpus} -ax map-ont ${contaminants} ${fastq} | \
     samtools fastq \
-    -f 4 >(gzip > ${sample_id}_decontaminated.fastq) \
+    -f 4 >(gzip > ${sample_id}_decontaminated.fastq.gz) \
     <(samtools view -bS -) \
     -0 /dev/null
   """
