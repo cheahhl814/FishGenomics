@@ -80,7 +80,7 @@ workflow mitoAssembly {
 }
 
 workflow canuWf {
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   name = Channel.value("${params.sample_id}")
   reference_genome = Channel.fromPath("${params.reference_genome}")
@@ -97,7 +97,7 @@ workflow canuWf {
 }
 
 workflow wtdbg2Wf {
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   name = Channel.value("${params.sample_id}")
   reference_genome = Channel.fromPath("${params.reference_genome}")
@@ -114,7 +114,7 @@ workflow wtdbg2Wf {
 }
 
 workflow flyeWf {
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   reference_genome = Channel.fromPath("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
@@ -131,7 +131,7 @@ workflow flyeWf {
 }
 
 workflow ravenWf {
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   reference_genome = Channel.fromPath("${params.reference_genome}")
 
@@ -146,7 +146,7 @@ workflow ravenWf {
 }
 
 workflow shastaWf {
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   reference_genome = Channel.fromPath("${params.reference_genome}")
   name = Channel.value("${params.sample_id}")
@@ -168,7 +168,7 @@ workflow reconciliationRagTag {
   scaffold3 = Channel.fromPath("${params.thirdA}")
   scaffold4 = Channel.fromPath("${params.fourthA}")
   scaffold5 = Channel.fromPath("${params.fifthA}")
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   reference_genome = Channel.fromPath("${params.reference_genome}")
 
@@ -191,7 +191,7 @@ workflow reconciliationQuickmerge {
   scaffold3 = Channel.fromPath("${params.thirdA}")
   scaffold4 = Channel.fromPath("${params.fourthA}")
   scaffold5 = Channel.fromPath("${params.fifthA}")
-  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq").collect()
+  fastq_files = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz").collect()
   fastqs = Channel.value(fastq_files)
   reference_genome = Channel.fromPath("${params.reference_genome}")
 
