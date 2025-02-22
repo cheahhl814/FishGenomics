@@ -1,4 +1,4 @@
-process identifymtDNA {
+process segregate {
     tag "Identify mtDNA-derived reads with Ganon"
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
@@ -7,30 +7,18 @@ process identifymtDNA {
     val(mitoDNA)
 
     output:
-    path "*.sam", emit: sam
+    path "*_mt.fastq.gz", emit: mitoq
+    path "*_nuclear.fastq.gz", emit: nuclearq
 
     script:
     def sample_id = fastq.baseName
     """
-    minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} > ${sample_id}_mt.sam
-    """
-}
-
-process segregate {
-    tag "Filter out mtDNA reads"
-    publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
-
-    input:
-    path(sam)
-
-    output:
-    path "*_nuclear.fastq", emit: nuclearq
-    path "*_mt.fastq", emit: mitoq
-
-    script:
-    """
-    samtools view -b -f 4 ${sam} | samtools fastq - > ${sample_id}_nuclear.fastq
-    samtools view -b -F 4 ${sam} | samtools fastq - > ${sample_id}_mt.fastq
+    minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} | \
+      samtools fastq \
+      -F 4 >(gzip > ${sample_id}_mt.fastq.gz) \
+      -f 4 >(gzip > ${sample_id}_nuclear.fastq.gz) \
+      <(samtools view -bS -) \
+      -0 /dev/null
     """
 }
 

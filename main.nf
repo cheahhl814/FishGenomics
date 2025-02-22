@@ -67,8 +67,7 @@ workflow mitoAssembly {
     .map { it -> tuple(it[0], it[1], it[3]) }
   orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir') // Input folder for OrthoFinder
 
-  identifymtDNA(reads, mitoDNA)
-  segregate(identifymtDNA.out.sam)
+  segregate(reads, mitoDNA)
   mtAssembly(segregate.out.mitoq.collect())
   mtPolish(mtAssembly.out.mtContig, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
