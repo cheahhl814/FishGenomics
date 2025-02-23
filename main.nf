@@ -59,7 +59,7 @@ workflow plotNdecon {
 
 workflow mitoAssembly {
   mitoDNA = Channel.value("${params.refmtDNA}/*_mt.{fa,fasta,fna}") // Mitochondrial DNAs of related species
-  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated.fastq.gz") // Decontaminated reads
+  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated*") // Decontaminated reads
   firstGene = Channel.value("${params.refmtDNA}/firstGene.{fna,fa,fasta}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
   refseq = Channel.value("refseq63f") // Reference folder name for MITOS2
   refseqDir = Channel.value("${params.refmtDNA}", type: 'dir') // Parent directory for refseq63f
