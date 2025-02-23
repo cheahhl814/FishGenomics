@@ -1,4 +1,4 @@
-process orthoSetup {
+process setup1 {
     tag "Create gene FASTA files of closely related species for Orthofinder"
     publishDir "./results/phylogenomics/input", mode: 'copy', overwrite: false, pattern: '**'
 
@@ -23,7 +23,7 @@ process orthoSetup {
     """
 }
 
-process orthoSetup2 {
+process setup2 {
     tag "Create gene FASTA files of target species for Orthofinder"
     publishDir "./results/phylogenomics/input", mode: 'copy', overwrite: false, pattern: '**'
 
@@ -86,7 +86,7 @@ process trimAl {
     """
 }
 
-process mtTree {
+process treeML {
     tag "Building phylogenetic tree"
     publishDir "./results/phylogenomics/tree", mode: 'copy', overwrite: false, pattern: '**'
 

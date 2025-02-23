@@ -28,6 +28,9 @@ params.finalAsm = "" // Final assembly after reconciliation
 params.species = ""
 params.buscodb = ""
 
+// Parameters (Phylogenomics)
+params.orthoDir = "${launchDir}/orthoFinderInput" // Input folder for Orthofinder
+
 // Module inclusion
 include { pipTools } from './modules/installLocal.nf'
 include { nanoplot } from './modules/nanoplot.nf'
@@ -213,6 +216,25 @@ workflow annotation {
   funPredict(funMask.out.maskGenome, species, buscodb)
   funAnnotate(funPredict.out, buscodb)
   annotationStats(annotateGenes.out.finalGFF)
+}
+
+workflow phylogenomics {
+  assembly = Channel.fromPath("${params.finalAsm}")
+  annotation = Channel.value("${params.resultDir}/annotation/annotate/*.gff")
+  orthoFasta = Channel.fromPath("${params.orthoDir}/*.fasta") // Genome FASTA files of related species
+  orthoGFF = Channel.fromPath("${params.orthoDir}/*.gff3") // Genome GFF files of related species
+  match = orthoFasta.map { file -> tuple(file.baseName, file) }
+    .combine(orthoGFF.map { file -> tuple(file.baseName, file) })
+    .filter { it[0] == it[2] }
+    .map { it -> tuple(it[0], it[1], it[3]) }
+  orthofinderInput = Channel.fromPath("${params.resultDir}/phylogenomics/input", type: 'dir') // Input folder for OrthoFinder
+
+
+  setup1(match)
+  setup2(annotation, assembly)
+  inferOrtho(orthofinderInput, setup1.out.geneFasta, setup2.out.geneFasta)
+  trimAl(inferOrtho.out.msa)
+  treeML(trimAl.out.trimal_fasta)
 }
 
 workflow generateReport {
