@@ -41,6 +41,7 @@ include { scaffold; scaffold2; patch as patch1; patch as patch2; patch as patch3
 include { quast; quast as quast_scaffold; busco; busco as busco_scaffold; galignment } from './modules/assessment.nf'
 include { multiqc as preassemblyReport; multiqc as mitoassemblyReport; multiqc as assemblyReport } from './modules/multiqc.nf'
 include { funClean; funSort; funMask; funPredict; funAnnotate; annotationStats } from './modules/annotate.nf'
+include { setup1; setup2; inferOrtho; trimAl; treeML } from './modules/phylogenomics.nf'
 
 // Workflows
 
