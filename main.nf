@@ -8,7 +8,7 @@ params.conFasta = "${launchDir}/contaminants.fasta" // Contaminant reference dat
 params.resultDir = "./results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
-params.refmt = "${launchDir}/referenceMt" // Mitochondria reference sequences (FASTA), annotation, and MITOS reference data of closely related species
+params.refseqDir = "${launchDir}/refseq63f" // Mitochondria reference sequences (FASTA), annotation, and MITOS reference data of closely related species
 params.refmtDNA = ""
 params.refmtGFF = ""
 params.firstGene = ""
