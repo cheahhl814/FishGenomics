@@ -50,7 +50,7 @@ process mtPolish {
   def fastq = mitoq.join(" ")
   def sample_id = contig.baseName
   """
-  minimap2 -t ${task.cpus} -ax map-ont $contig ${mitoq} -o ${sample_id}.paf
+  minimap2 -t ${task.cpus} -ax map-ont ${contig} ${mitoq} -o ${sample_id}.paf
   racon ${mitoq} ${sample_id}.paf ${contig} > ${sample_id}_racon.fasta
   """
 }
