@@ -25,12 +25,13 @@ process mtAssembly {
 
   input:
   path(fastqs)
+  path(flyeDir)
 
   script:
   def fastq = fastqs.join(" ")
   """
-  mkdir ./results/mtGenome/assembly
-  flye -t ${task.cpus} --genome-size 16k --out-dir ./results/mtGenome/assembly --nano-raw ${fastq}
+  mkdir ${flyeDir}
+  flye -t ${task.cpus} --genome-size 16k --out-dir ${flyeDir} --nano-raw ${fastq}
   """
 }
 
