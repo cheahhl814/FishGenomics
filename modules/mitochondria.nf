@@ -3,8 +3,8 @@ process segregate {
     publishDir "./results/mtGenome", mode: 'copy', overwrite: false, pattern: '**'
 
     input:
-    path(fastq)
     val(mitoDNA)
+    path(fastq)
 
     output:
     path "*_mt.fastq.gz", emit: mitoq
