@@ -110,7 +110,7 @@ process orthoSetup {
     script:
     """
     bedtools getfasta -s -name -fi ${fasta} -bed ${gff} -fo ${sample_id}_mtGenes.fasta
-    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta} - > ${sample_id}_mtGenes_filtered.fasta
+    grep '^>' ${sample_id}_mtGenes.fasta | grep -v 'region' | grep -v 'tRNA' | grep -v 'CDS' | grep -v 'exon' | grep -v 'sequence' | grep -v 'ncRNA_gene' | sed 's/^>//' | seqtk subseq ${sample_id}_mtGenes.fasta - > ${sample_id}_mtGenes_filtered.fasta
     """
 }
 
