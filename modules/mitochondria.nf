@@ -30,7 +30,6 @@ process mtAssembly {
   script:
   def fastq = fastqs.join(" ")
   """
-  mkdir ${flyeDir}
   flye -t ${task.cpus} --genome-size 16k --out-dir ${flyeDir} --nano-raw ${fastq}
   """
 }
@@ -87,7 +86,6 @@ process mtAnnotate {
     script:
     def sample_id = mtFinal.baseName
     """
-    mkdir ${mitosDir}
     runmitos.py --input ${mtFinal} --outdir ${mitosDir} --refseq ${refseq} --code 2 --refdir ${refseqDir}
     """
 }
