@@ -35,7 +35,7 @@ params.buscodb = ""
 params.orthoDir = "${launchDir}/orthoFinderInput" // Input folder for Orthofinder
 
 // Module inclusion
-include { pipTools } from './modules/installLocal.nf'
+include { pipTools; mkdir } from './modules/setup.nf'
 include { nanoplot } from './modules/nanoplot.nf'
 include { decon } from './modules/decon.nf'
 include { segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; orthoFinder; trimMSA; mtTree } from './modules/mitochondria.nf'
