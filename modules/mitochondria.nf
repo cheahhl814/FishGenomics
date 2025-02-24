@@ -140,7 +140,7 @@ process orthoFinder {
 
   script:
   """
-  orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ./results/mtGenome/phylogenetics/input
+  orthofinder -t ${task.cpus} -d -M msa -A mafft -oa -f ${inputDir}
   """
 }
 
