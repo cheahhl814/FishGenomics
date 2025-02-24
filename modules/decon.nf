@@ -12,10 +12,6 @@ process decon {
   script:
   def sample_id = fastq.baseName
   """
-  minimap2 -t ${task.cpus} -ax map-ont ${contaminants} ${fastq} | \
-    samtools fastq \
-    -f 4 >(gzip > ${sample_id}_decontaminated.fastq.gz) \
-    <(samtools view -bS -) \
-    -0 /dev/null
+  minimap2 -t ${task.cpus} -ax map-ont ${contaminants} ${fastq} | samtools view -bS - | samtools fastq -f 4 - | gzip > ${sample_id}_decontaminated.fastq.gz)
   """
 }
