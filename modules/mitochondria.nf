@@ -43,7 +43,6 @@ process mtPolish {
   path(mitoq)
 
   output:
-  path "*.paf", emit: minimap_output
   path "*_racon.fasta", emit: polished_fasta
 
   script:
