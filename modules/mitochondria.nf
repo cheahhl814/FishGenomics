@@ -25,6 +25,7 @@ process mtAssembly {
 
   input:
   path(fastqs)
+  path(flyeDir)
 
   output:
   path "assembly.fasta", emit: mtContig
@@ -32,7 +33,7 @@ process mtAssembly {
   script:
   def fastq = fastqs.join(" ")
   """
-  flye -t ${task.cpus} --genome-size 16k --out-dir ./results/mtGenome/assembly --nano-raw ${fastq}
+  flye -t ${task.cpus} --genome-size 16k --out-dir ${flyeDir} --nano-raw ${fastq}
   """
 }
 
