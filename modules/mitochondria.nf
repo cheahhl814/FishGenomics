@@ -14,8 +14,8 @@ process segregate {
     def sample_id = fastq.baseName
     """
     minimap2 -t ${task.cpus} -ax map-ont $mitoDNA ${fastq} | samtools view -bS - > ${sample_id}_mt.bam
-    samtools fastq -F 4 ${sample_id}_nt.bam | gzip > ${sample_id}_mt.fastq.gz
-    samtools fastq -f 4 ${sample_id}_nt.bam | gzip > ${sample_id}_nuclear.fastq.gz
+    samtools fastq -F 4 ${sample_id}_mt.bam | gzip > ${sample_id}_mt.fastq.gz
+    samtools fastq -f 4 ${sample_id}_mt.bam | gzip > ${sample_id}_nuclear.fastq.gz
     """
 }
 
