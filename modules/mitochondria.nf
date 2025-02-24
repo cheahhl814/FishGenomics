@@ -27,9 +27,6 @@ process mtAssembly {
   path(fastqs)
   path(flyeDir)
 
-  output:
-  path "assembly.fasta", emit: mtContig
-
   script:
   def fastq = fastqs.join(" ")
   """
