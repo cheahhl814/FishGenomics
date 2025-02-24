@@ -90,6 +90,7 @@ process mtAnnotate {
     script:
     def sample_id = mtFinal.baseName
     """
+    mkdir ./results/mtGenome/annotate
     runmitos.py --input ${mtFinal} --outdir ./results/mtGenome/annotate --refseq ${refseq} --code 2 --refdir ${refseqDir}
     """
 }
