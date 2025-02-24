@@ -66,6 +66,8 @@ workflow mitoAssembly {
   firstGene = Channel.value("${params.firstGene}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
   flyeDir = Channel.fromPath("${params.resultDir}/mtGenome/assembly", type: 'dir')
   flyeAssembly = Channel.watchPath("${params.resultDir}/mtGenome/assembly/assembly.fasta")
+  mitosDir = Channel.fromPath("${params.resultDir}/annotation", type: 'dir')
+  mitosGFF = Channel.watchPath("${params.resultDir}/annotation/result.gff")
   refseq = Channel.value("refseq63f") // Reference folder name for MITOS2
   refseqDir = Channel.fromPath("${params.refseqDir}", type: 'dir') // Parent directory for refseq63f
   orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta") // FASTA files of mitochondrial DNAs of related species
@@ -80,9 +82,9 @@ workflow mitoAssembly {
   mtAssembly(segregate.out.mitoq.collect(), flyeDir)
   mtPolish(flyeAssembly, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
-  mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
+  mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir, mitosDir)
   orthoSetup(match)
-  mtOrtho(mtAnnotate.out.mtGenes, mtCircular.out.mtFinal)
+  mtOrtho(mitosGFF, mtCircular.out.mtFinal)
   orthoFinder(orthofinderInput, orthoSetup.out.geneFasta, mtOrtho.out.geneFasta)
   trimMSA(orthoFinder.out.msa)
   mtTree(trimMSA.out.trimal_fasta)
