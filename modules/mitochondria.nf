@@ -88,7 +88,7 @@ process mtAnnotate {
     path "result.gff", emit: mtGenes
 
     script:
-    def sample_id = mtCircular.baseName
+    def sample_id = mtFinal.baseName
     """
     runmitos.py --input ${mtFinal} --outdir ./results/mtGenome/annotate --refseq ${refseq} --code 2 --refdir ${refseqDir}
     """
