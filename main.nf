@@ -65,7 +65,7 @@ workflow mitoAssembly {
   reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated*") // Decontaminated reads
   firstGene = Channel.value("${params.firstGene}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
   flyeDir = Channel.fromPath("${params.resultDir}/mtGenome/assembly", type: 'dir')
-  mtAssembly = Channel.watchPath("${params.resultDir}/mtGenome/assembly/assembly.fasta")
+  flyeAssembly = Channel.watchPath("${params.resultDir}/mtGenome/assembly/assembly.fasta")
   refseq = Channel.value("refseq63f") // Reference folder name for MITOS2
   refseqDir = Channel.fromPath("${params.refseqDir}", type: 'dir') // Parent directory for refseq63f
   orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta") // FASTA files of mitochondrial DNAs of related species
@@ -78,7 +78,7 @@ workflow mitoAssembly {
 
   segregate(mitoDNA, reads)
   mtAssembly(segregate.out.mitoq.collect(), flyeDir)
-  mtPolish(mtAssembly, segregate.out.mitoq.collect())
+  mtPolish(flyeAssembly, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir)
   orthoSetup(match)
