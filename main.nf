@@ -9,9 +9,9 @@ params.resultDir = "./results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
 params.refseqDir = "${launchDir}/refseq63f" // Mitochondria reference sequences (FASTA), annotation, and MITOS reference data of closely related species
-params.refmtDNA = ""
-params.refmtGFF = ""
-params.firstGene = ""
+params.refmtDNA = "${launchDir}/reference_mt.fasta"
+params.refmtGFF = "${launchDir}/reference_mt.gff"
+params.firstGene = "${launchDir}/firstGene.fasta"
 params.orthoMt = "${launchDir}/orthofinderMt" // Input folder for Orthofinder
 
 // Parameters (Assembly)
