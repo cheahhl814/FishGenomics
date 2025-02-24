@@ -55,13 +55,15 @@ workflow setup {
   mkdir(resultDir)
 }
 
-workflow readProcessing {
+workflow readQc {
   reads = Channel.fromPath("${params.fastq}")
   sampleID = Channel.value("${params.sample_id}")
+  conFasta = Channel.value("${params.conFasta}")
 
-  nanoplot(reads.collect(), sampleID)
-  porechop(nanoplot.out.mergedFastq)
-  filtlong(porechop.out.filtlong_fastq)
+  porechop(reads.collect())
+  filtlong(porechop.out.porechop_fastq)
+  decon(conFasta, filtlong.out.filtlong_fastq)
+  sequali(reads.collect(), sampleID)
 }
 
 workflow decon {

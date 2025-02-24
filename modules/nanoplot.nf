@@ -14,6 +14,7 @@ process sequali {
   def fastqs = fastq.join(" ")
   """
   cat ${fastqs} > ${sample_id}.fastq
+  sequali ${sample_id}.fastq
   """
 }
 
@@ -49,8 +50,10 @@ process porechop {
     path "*_porechop.fastq", emit: porechop_fastq
 
     script:
+    def fastqs = fastq.join(" ")
     """
-    porechop --threads ${task.cpus} -i ${fastq} -o ${baseName}_porechop.fastq --format fastq
+    cat ${fastqs} > ${sample_id}.fastq
+    porechop --threads ${task.cpus} -i ${sample_id}.fastq -o ${sample_id}_porechop.fastq --format fastq
     """
 }
 
