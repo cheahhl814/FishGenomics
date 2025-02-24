@@ -7,15 +7,15 @@ process segregate {
     path(fastq)
 
     output:
-    path "*_mt.fastq.gz", emit: mitoq
-    path "*_nuclear.fastq.gz", emit: nuclearq
+    path "*_mt.fastq", emit: mitoq
+    path "*_nuclear.fastq", emit: nuclearq
 
     script:
     def sample_id = fastq.baseName
     """
     minimap2 -t ${task.cpus} -ax map-ont $mitoDNA ${fastq} | samtools view -bS - > ${sample_id}_mt.bam
-    samtools fastq -F 4 ${sample_id}_mt.bam | gzip > ${sample_id}_mt.fastq.gz
-    samtools fastq -f 4 ${sample_id}_mt.bam | gzip > ${sample_id}_nuclear.fastq.gz
+    samtools fastq -F 4 ${sample_id}_mt.bam | ${sample_id}_mt.fastq
+    samtools fastq -f 4 ${sample_id}_mt.bam | ${sample_id}_nuclear.fastq
     """
 }
 
