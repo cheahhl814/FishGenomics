@@ -27,7 +27,7 @@ process mtAssembly {
   path(fastqs)
 
   output:
-  path "./results/mtGenome/assembly.fasta", emit: mtContig
+  path "assembly.fasta", emit: mtContig
 
   script:
   def fastq = fastqs.join(" ")
