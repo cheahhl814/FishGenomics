@@ -15,7 +15,9 @@ process mkdir {
 
     script:
     """
+    mkdir ${resultDir}/pre-assembly
     mkdir ${resultDir}/mtGenome/assembly
     mkdir ${resultDir}/mtGenome/annotation
+    cat 
     """
 }

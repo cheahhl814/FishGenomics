@@ -3,9 +3,9 @@
 nextflow.enable.dsl=2
 
 // Parameters (Pre-assembly)
-params.fastq = "${launchDir}/reads/*.fastq.gz" // Input WGS long read fastq files
+params.fastq = "${launchDir}/reads/*.fastq" // Input WGS long read fastq files
 params.conFasta = "${launchDir}/contaminants.fasta" // Contaminant reference database
-params.resultDir = "./results" // Directory for all results
+params.resultDir = "${launchDir}/results" // Directory for all results
 
 // Parameters (Mitogenome assembly)
 params.refseqDir = "${launchDir}/refseq63f" // Mitochondria reference sequences (FASTA), annotation, and MITOS reference data of closely related species
@@ -36,7 +36,7 @@ params.orthoDir = "${launchDir}/orthoFinderInput" // Input folder for Orthofinde
 
 // Module inclusion
 include { pipTools; mkdir } from './modules/setup.nf'
-include { nanoplot } from './modules/nanoplot.nf'
+include { nanoplot; sequali; porechop; filtlong } from './modules/nanoplot.nf'
 include { decon } from './modules/decon.nf'
 include { segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; orthoFinder; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
@@ -48,16 +48,29 @@ include { setup1; setup2; inferOrtho; trimAl; treeML } from './modules/phylogeno
 
 // Workflows
 
-workflow extraTools {
+workflow setup {
+  resultDir = Channel.fromPath("${params.resultDir}")
+
   pipTools()
+  mkdir(resultDir)
 }
 
-workflow plotNdecon {
+workflow readProcessing {
   reads = Channel.fromPath("${params.fastq}")
+  sampleID = Channel.value("${params.sample_id}")
+
+  nanoplot(reads.collect(), sampleID)
+  porechop(nanoplot.out.mergedFastq)
+  filtlong(porechop.out.filtlong_fastq)
+}
+
+workflow decon {
+  reads = Channel.fromPath("${params.resultDir}/pre-assembly/filtlong/*_filtlong.fastq")
+  sampleID = Channel.value("${params.sample_id}")
   conFasta = Channel.value("${params.conFasta}")
 
-  nanoplot(reads.collect())
-  decon(conFasta, reads)
+  nanoplot(reads, sampleID)
+  decon(conFasta, nanoplot.out.mergedFastq)
 }
 
 workflow mitoAssembly {
@@ -79,7 +92,7 @@ workflow mitoAssembly {
   orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir') // Input folder for OrthoFinder
 
   segregate(mitoDNA, reads)
-  mtAssembly(segregate.out.mitoq.collect(), flyeDir)
+  mtAssembly(segregate.out.mitoq.collect, flyeDir)
   mtPolish(flyeAssembly, segregate.out.mitoq.collect())
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir, mitosDir)
