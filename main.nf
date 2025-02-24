@@ -66,8 +66,8 @@ workflow mitoAssembly {
   firstGene = Channel.value("${params.firstGene}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
   flyeDir = Channel.fromPath("${params.resultDir}/mtGenome/assembly", type: 'dir')
   flyeAssembly = Channel.watchPath("${params.resultDir}/mtGenome/assembly/assembly.fasta")
-  mitosDir = Channel.fromPath("${params.resultDir}/annotation", type: 'dir')
-  mitosGFF = Channel.watchPath("${params.resultDir}/annotation/result.gff")
+  mitosDir = Channel.fromPath("${params.resultDir}/mtGenome/annotation", type: 'dir')
+  mitosGFF = Channel.watchPath("${params.resultDir}/mtGenome/annotation/result.gff")
   refseq = Channel.value("refseq63f") // Reference folder name for MITOS2
   refseqDir = Channel.fromPath("${params.refseqDir}", type: 'dir') // Parent directory for refseq63f
   orthoFasta = Channel.fromPath("${params.orthoMt}/*.fasta") // FASTA files of mitochondrial DNAs of related species
