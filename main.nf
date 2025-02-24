@@ -60,10 +60,10 @@ workflow readQc {
   sampleID = Channel.value("${params.sample_id}")
   conFasta = Channel.value("${params.conFasta}")
 
-  porechop(reads.collect())
+  porechop(reads.collect(), sampleID)
   filtlong(porechop.out.porechop_fastq)
   decon(conFasta, filtlong.out.filtlong_fastq)
-  sequali(reads.collect(), sampleID)
+  sequali(porechop.out.mergedFastq, )
 }
 
 workflow decon {

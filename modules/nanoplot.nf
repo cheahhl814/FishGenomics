@@ -1,20 +1,34 @@
-process sequali {
-  tag "Quality checking of ONT reads using Sequali"
-  publishDir "./results/pre-assembly/sequali", mode: 'copy', overwrite: false, pattern: '**'
+process mergeReads {
+  tag "Merge FASTQ reads"
+  publishDir "./results/pre-assembly", mode: 'copy', overwrite: false, pattern: '**'
 
   input:
   path(fastq)
   val(sample_id)
 
   output:
-  path "*.html", emit: html
-  path "*json", emit: json
+  path "${sample_id}.fastq", emit: mergedFastq
 
   script:
   def fastqs = fastq.join(" ")
   """
   cat ${fastqs} > ${sample_id}.fastq
-  sequali ${sample_id}.fastq
+  """
+}
+process sequali {
+  tag "Quality checking of ONT reads using Sequali"
+  publishDir "./results/pre-assembly/sequali", mode: 'copy', overwrite: false, pattern: '**'
+
+  input:
+  path(fastq)
+
+  output:
+  path "*.html", emit: html
+  path "*json", emit: json
+
+  script:
+  """
+  sequali ${fastq}
   """
 }
 
@@ -24,7 +38,6 @@ process nanoplot {
 
   input:
   path(fastq)
-  val(sample_id)
 
   output:
   path "${sample_id}.fastq", emit: mergedFastq
@@ -32,10 +45,8 @@ process nanoplot {
   path "*.html", emit: html
 
   script:
-  def fastqs = fastq.join(" ")
   """
-  cat ${fastqs} > ${sample_id}.fastq
-  NanoPlot --threads ${task.cpus} --fastq ${sample_id}.fastq --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
+  NanoPlot --threads ${task.cpus} --fastq ${fastq} --maxlength 40000 --tsv_stats --plots dot --format png --info_in_report
   """
 }
 
@@ -47,13 +58,13 @@ process porechop {
     path(fastq)
 
     output:
-    path "*_porechop.fastq", emit: porechop_fastq
+    path "${sample_id}.fastq", emit: mergedFastq
+    path "${sample_id}_porechop.fastq", emit: porechop_fastq
 
     script:
-    def fastqs = fastq.join(" ")
+    def sample_id = fastq.baseName
     """
-    cat ${fastqs} > ${sample_id}.fastq
-    porechop --threads ${task.cpus} -i ${sample_id}.fastq -o ${sample_id}_porechop.fastq --format fastq
+    porechop --threads ${task.cpus} -i ${fastq} -o ${sample_id}_porechop.fastq --format fastq
     """
 }
 
@@ -67,7 +78,8 @@ process filtlong {
     path "*.fastq", emit: filtlong_fastq
 
     script:
+    def sample_id = fastq.baseName
     """
-    filtlong --min_length 1000 --keep_percent 90 ${fastq} > ${baseName}_filtlong.fastq
+    filtlong --min_length 1000 --keep_percent 90 ${fastq} > ${sample_id}_filtlong.fastq
     """
 }
