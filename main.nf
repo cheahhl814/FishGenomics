@@ -111,23 +111,23 @@ workflow mitoAssembly {
 }
 
 workflow canuWf {
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   name = Channel.value("${params.sample_id}")
   reference_genome = Channel.value("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
 
-  canu(reads.collect(), genomeSize, name)
-  racon(canu.out.canu_contig, reads.collect())
+  canu(reads, genomeSize, name)
+  racon(canu.out.canu_contig, reads)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, reads.collect())
+  scaffold(racon.out.polished_fasta, reference_genome, reads)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
 }
 
 workflow wtdbg2Wf {
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   name = Channel.value("${params.sample_id}")
   reference_genome = Channel.value("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
@@ -143,7 +143,7 @@ workflow wtdbg2Wf {
 }
 
 workflow flyeWf {
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   reference_genome = Channel.value("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
@@ -159,7 +159,7 @@ workflow flyeWf {
 }
 
 workflow ravenWf {
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   reference_genome = Channel.fromPath("${params.reference_genome}")
 
   raven(reads.collect())
@@ -173,7 +173,7 @@ workflow ravenWf {
 }
 
 workflow shastaWf {
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   reference_genome = Channel.fromPath("${params.reference_genome}")
   name = Channel.value("${params.sample_id}")
 
@@ -194,7 +194,7 @@ workflow reconciliationRagTag {
   scaffold3 = Channel.fromPath("${params.thirdA}")
   scaffold4 = Channel.fromPath("${params.fourthA}")
   scaffold5 = Channel.fromPath("${params.fifthA}")
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   reference_genome = Channel.fromPath("${params.reference_genome}")
 
   // Genome reconciliation workflow
@@ -216,7 +216,7 @@ workflow reconciliationQuickmerge {
   scaffold3 = Channel.fromPath("${params.thirdA}")
   scaffold4 = Channel.fromPath("${params.fourthA}")
   scaffold5 = Channel.fromPath("${params.fifthA}")
-  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.fastq.gz")
+  reads = Channel.fromPath("${params.resultDir}/mtGenome/*_nuclear.*")
   reference_genome = Channel.value("${params.reference_genome}")
 
   // Genome reconciliation workflow
