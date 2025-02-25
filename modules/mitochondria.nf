@@ -13,7 +13,7 @@ process segregate {
     script:
     def sample_id = fastq.baseName
     """
-    minimap2 -t ${task.cpus} -ax map-ont $mitoDNA ${fastq} | samtools view -bS - > ${sample_id}_mt.bam
+    minimap2 -t ${task.cpus} -ax map-ont ${mitoDNA} ${fastq} | samtools view -bS - > ${sample_id}_mt.bam
     samtools fastq -F 4 ${sample_id}_mt.bam > ${sample_id}_mt.fastq
     samtools fastq -f 4 ${sample_id}_mt.bam > ${sample_id}_nuclear.fastq
     """
@@ -134,9 +134,6 @@ process orthoFinder {
   path(inputDir)
   val(dummy1)
   val(dummy2)
-
-  output:
-  path "SpeciesTreeAlignment.fa", emit: msa
 
   script:
   """

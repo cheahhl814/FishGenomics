@@ -96,6 +96,7 @@ workflow mitoAssembly {
     .filter { it[0] == it[2] }
     .map { it -> tuple(it[0], it[1], it[3]) }
   orthofinderInput = Channel.fromPath("${params.resultDir}/mtGenome/phylogenetics/input", type: 'dir') // Input folder for OrthoFinder
+  trimInput = Channel.watchPath("${params.resultDir}/mtGenome/phylogenetics/input/OrthoFinder/Results_*/MultipleSequenceAlignments/SpeciesTreeAlignment.fa")
 
   segregate(mitoDNA, reads)
   mtAssembly(segregate.out.mitoq.collect, flyeDir)
@@ -105,7 +106,7 @@ workflow mitoAssembly {
   orthoSetup(match)
   mtOrtho(mitosGFF, mtCircular.out.mtFinal)
   orthoFinder(orthofinderInput, orthoSetup.out.geneFasta, mtOrtho.out.geneFasta)
-  trimMSA(orthoFinder.out.msa)
+  trimMSA(trimInput)
   mtTree(trimMSA.out.trimal_fasta)
 }
 
