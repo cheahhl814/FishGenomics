@@ -7,7 +7,7 @@ process decon {
   path(fastq)
 
   output:
-  path "*_decontaminated.fastq", emit: deconFASTQ
+  path "*_decontaminated.fastq", emit: deconFastq
 
   script:
   def sample_id = fastq.baseName

@@ -36,7 +36,7 @@ params.orthoDir = "${launchDir}/orthoFinderInput" // Input folder for Orthofinde
 
 // Module inclusion
 include { pipTools; mkdir } from './modules/setup.nf'
-include { nanoplot; sequali; porechop; filtlong } from './modules/nanoplot.nf'
+include { mergeReads; sequali as sequali1; sequali as sequali2; porechop; filtlong } from './modules/nanoplot.nf'
 include { decon } from './modules/decon.nf'
 include { segregate; mtAssembly; mtPolish; mtCircular; mtAnnotate; orthoSetup; mtOrtho; orthoFinder; trimMSA; mtTree } from './modules/mitochondria.nf'
 include { canu; wtdbg2; flye; raven; shasta; racon } from './modules/assembly.nf'
@@ -60,10 +60,12 @@ workflow readQc {
   sampleID = Channel.value("${params.sample_id}")
   conFasta = Channel.value("${params.conFasta}")
 
-  porechop(reads.collect(), sampleID)
+  mergeReads(reads.collect(), sampleID)
+  sequali1(mergeReads.out.mergedFastq)
+  porechop(mergeReads.out.mergedFastq)
   filtlong(porechop.out.porechop_fastq)
   decon(conFasta, filtlong.out.filtlong_fastq)
-  sequali(porechop.out.mergedFastq, )
+  sequali2(decon.out.deconFastq)
 }
 
 workflow decon {
