@@ -69,12 +69,14 @@ workflow readQc {
 }
 
 workflow decon {
-  reads = Channel.fromPath("${params.resultDir}/pre-assembly/filtlong/*_filtlong.fastq")
+  reads = Channel.fromPath("${params.fastq}")
   sampleID = Channel.value("${params.sample_id}")
   conFasta = Channel.value("${params.conFasta}")
 
-  nanoplot(reads, sampleID)
-  decon(conFasta, nanoplot.out.mergedFastq)
+  mergeReads(reads.collect(), sampleID)
+  sequali1(mergeReads.out.mergedFastq)
+  decon(conFasta, mergeReads.out.mergedFastq)
+  sequali2(decon.out.deconFastq)
 }
 
 workflow mitoAssembly {
