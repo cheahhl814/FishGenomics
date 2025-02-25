@@ -81,7 +81,7 @@ workflow decon {
 
 workflow mitoAssembly {
   mitoDNA = Channel.value("${params.refmtDNA}") // Mitochondrial DNAs of related species
-  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated*") // Decontaminated reads
+  reads = Channel.fromPath("${params.resultDir}/decon/*_decontaminated_*") // Decontaminated reads
   firstGene = Channel.value("${params.firstGene}") // Desired first gene in mitochondrial DNA circularization, e.g., COI.
   flyeDir = Channel.fromPath("${params.resultDir}/mtGenome/assembly", type: 'dir')
   flyeAssembly = Channel.watchPath("${params.resultDir}/mtGenome/assembly/assembly.fasta")
@@ -99,8 +99,8 @@ workflow mitoAssembly {
   trimInput = Channel.watchPath("${params.resultDir}/mtGenome/phylogenetics/input/OrthoFinder/Results_*/MultipleSequenceAlignments/SpeciesTreeAlignment.fa")
 
   segregate(mitoDNA, reads)
-  mtAssembly(segregate.out.mitoq.collect, flyeDir)
-  mtPolish(flyeAssembly, segregate.out.mitoq.collect())
+  mtAssembly(segregate.out.mitoq, flyeDir)
+  mtPolish(flyeAssembly, segregate.out.mitoq)
   mtCircular(mtPolish.out.polished_fasta, firstGene)
   mtAnnotate(mtCircular.out.mtFinal, refseq, refseqDir, mitosDir)
   orthoSetup(match)
@@ -132,11 +132,11 @@ workflow wtdbg2Wf {
   reference_genome = Channel.value("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
 
-  wtdbg2(reads.collect(), genomeSize, name)
-  racon(wtdbg2.out.wtdbg2_contig, reads.collect())
+  wtdbg2(reads, genomeSize, name)
+  racon(wtdbg2.out.wtdbg2_contig, reads)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
-  scaffold(racon.out.polished_fasta, reference_genome, reads.collect())
+  scaffold(racon.out.polished_fasta, reference_genome, reads)
   quast_scaffold(scaffold.out.scaffold_fasta, reference_genome)
   busco_scaffold(scaffold.out.scaffold_fasta)
   galignment(scaffold.out.scaffold_fasta, reference_genome)
@@ -148,8 +148,8 @@ workflow flyeWf {
   genomeSize = Channel.value("${params.genomeSize}")
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
 
-  flye(reads.collect(), genomeSize, flyeDir)
-  racon(flye.out.flye_contig, reads.collect())
+  flye(reads, genomeSize, flyeDir)
+  racon(flye.out.flye_contig, reads)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   scaffold(racon.out.polished_fasta, reference_genome, reads.collect())
