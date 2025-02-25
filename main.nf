@@ -147,9 +147,10 @@ workflow flyeWf {
   reference_genome = Channel.value("${params.reference_genome}")
   genomeSize = Channel.value("${params.genomeSize}")
   flyeDir = Channel.fromPath("${params.resultDir}/assembly/flye", type: 'dir')
+  flyeAssembly = Channel.watchPath("${params.resultDir}/assembly/flye/assembly.fasta")
 
   flye(reads, genomeSize, flyeDir)
-  racon(flye.out.flye_contig, reads)
+  racon(flyeAssembly, reads)
   quast(racon.out.polished_fasta, reference_genome)
   busco(racon.out.polished_fasta)
   scaffold(racon.out.polished_fasta, reference_genome, reads.collect())
